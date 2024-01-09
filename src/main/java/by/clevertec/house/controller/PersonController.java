@@ -3,6 +3,7 @@ package by.clevertec.house.controller;
 import by.clevertec.house.dto.PersonDto;
 import by.clevertec.house.service.PersonService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,16 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/persons")
+@RequiredArgsConstructor
 public class PersonController {
-    private PersonService personService;
+    private final PersonService personService;
 
-    public PersonController(PersonService personService) {
-        this.personService = personService;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonDto> getPersonById(@PathVariable Long id) {
@@ -29,9 +29,16 @@ public class PersonController {
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
+    //    @GetMapping
+//    public ResponseEntity<List<PersonDto>> getAllPersons() {
+//        List<PersonDto> persons = personService.getAllPersons();
+//        return new ResponseEntity<>(persons, HttpStatus.OK);
+//    }
     @GetMapping
-    public ResponseEntity<List<PersonDto>> getAllPersons() {
-        List<PersonDto> persons = personService.getAllPersons();
+    public ResponseEntity<List<PersonDto>> getAllPersons(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        List<PersonDto> persons = personService.getAllPersons(pageNumber, pageSize);
         return new ResponseEntity<>(persons, HttpStatus.OK);
     }
 

@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'war'
+    id "io.freefair.lombok" version "6.5.1"
 }
 
 group 'by.clevertec'
@@ -9,18 +11,42 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springVersion = '6.1.2'
+}
+
 dependencies {
-    implementation 'org.springframework:spring-jdbc:6.0.6'
-    implementation 'org.springframework:spring-core:6.1.2'
-    implementation 'org.springframework:spring-context:6.1.2:'
-    implementation 'org.springframework:spring-beans:6.1.2'
-    implementation 'org.springframework:spring-webmvc:6.1.2'
+    implementation "org.springframework:spring-webmvc:${springVersion}"
+    implementation "org.springframework:spring-orm:${springVersion}"
+
+    implementation 'org.hibernate:hibernate-core:6.1.7.Final'
+    implementation 'org.hibernate:hibernate-entitymanager:5.6.15.Final'
+    implementation 'org.flywaydb:flyway-core:9.22.0'
+
     implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
+
+    implementation "org.yaml:snakeyaml:2.1"
     implementation 'org.postgresql:postgresql:42.5.4'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     implementation 'org.projectlombok:lombok:1.18.26'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testImplementation 'org.mockito:mockito-core:5.2.0'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.3.Final"
+
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
+
+
+}
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.verbose=true'
+    ]
 }
 
 test {

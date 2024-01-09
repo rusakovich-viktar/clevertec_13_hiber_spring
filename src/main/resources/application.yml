@@ -1,11 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase
-    username: myusername
-    password: mypassword
+    url: jdbc:postgresql://localhost:5432/house"
+    username: postgres
+    password: postgres
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create and drop
 
 server:
   port: 8080
+

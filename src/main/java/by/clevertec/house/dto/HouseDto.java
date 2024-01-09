@@ -1,10 +1,12 @@
 package by.clevertec.house.dto;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class HouseDto {
     private UUID uuid;
     private double area;
@@ -12,5 +14,7 @@ public class HouseDto {
     private String city;
     private String street;
     private String number;
-    private LocalDateTime createDate;
+    private String createDateIso;
+    private List<UUID> residentUuids;
+    private List<UUID> ownerUuids;
 }

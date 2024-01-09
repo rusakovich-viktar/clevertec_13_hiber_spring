@@ -2,24 +2,35 @@ package by.clevertec.house.dao.impl;
 
 import by.clevertec.house.dao.PersonDao;
 import by.clevertec.house.entity.PersonEntity;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+//@Transactional
+@Repository
+@RequiredArgsConstructor
 public class PersonDaoImpl implements PersonDao {
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public PersonEntity getPersonById(Long id) {
         return entityManager.find(PersonEntity.class, id);
     }
 
+    //    @Override
+//    public List<PersonEntity> getAllPersons() {
+//        return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class).getResultList();
+//    }
     @Override
-    public List<PersonEntity> getAllPersons() {
-        return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class).getResultList();
+    public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
+        return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)
+                .setFirstResult((pageNumber - 1) * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
     }
 
     @Override

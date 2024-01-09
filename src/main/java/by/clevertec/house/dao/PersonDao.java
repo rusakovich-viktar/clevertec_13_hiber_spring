@@ -8,7 +8,8 @@ public interface PersonDao {
 
     PersonEntity getPersonById(Long id);
 
-    List<PersonEntity> getAllPersons();
+    //    List<PersonEntity> getAllPersons();
+    List<PersonEntity> getAllPersons(int pageNumber, int pageSize);
 
     void savePerson(PersonEntity person);
 

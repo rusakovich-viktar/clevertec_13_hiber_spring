@@ -1,21 +1,27 @@
 package by.clevertec.house.service.impl;
 
+import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dao.PersonDao;
+import by.clevertec.house.dto.HouseDto;
 import by.clevertec.house.dto.PersonDto;
 import by.clevertec.house.entity.PersonEntity;
+import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.service.PersonService;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
+//@Transactional
+@RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
-    private PersonDao personDao;
-    private PersonMapper personMapper;
+    private final PersonDao personDao;
+    private final HouseDao houseDao;
+    private final PersonMapper personMapper;
+    private final HouseMapper houseMapper;
 
-    public PersonServiceImpl(PersonDao personDao, PersonMapper personMapper) {
-        this.personDao = personDao;
-        this.personMapper = personMapper;
-    }
 
     @Override
     public PersonDto getPersonById(Long id) {
@@ -23,11 +29,17 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<PersonDto> getAllPersons() {
-        return personDao.getAllPersons().stream()
+    public List<PersonDto> getAllPersons(int pageNumber, int pageSize) {
+        return personDao.getAllPersons(pageNumber, pageSize).stream()
                 .map(personMapper::toDto)
                 .collect(Collectors.toList());
     }
+//    @Override
+//    public List<PersonDto> getAllPersons() {
+//        return personDao.getAllPersons().stream()
+//                .map(personMapper::toDto)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public void savePerson(PersonDto personDto) {
@@ -47,5 +59,12 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void deletePerson(Long id) {
         personDao.deletePerson(id);
+    }
+
+    @Override
+    public List<HouseDto> getOwnedHouses(Long personId) {
+        return houseDao.getHousesByOwnerId(personId).stream()
+                .map(houseMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
