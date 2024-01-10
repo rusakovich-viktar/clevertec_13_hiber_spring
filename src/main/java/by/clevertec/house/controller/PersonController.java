@@ -29,11 +29,6 @@ public class PersonController {
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
-    //    @GetMapping
-//    public ResponseEntity<List<PersonDto>> getAllPersons() {
-//        List<PersonDto> persons = personService.getAllPersons();
-//        return new ResponseEntity<>(persons, HttpStatus.OK);
-//    }
     @GetMapping
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(defaultValue = "1") int pageNumber,

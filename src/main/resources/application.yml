@@ -1,11 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/house"
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/house
     username: postgres
     password: postgres
+
   jpa:
     hibernate:
-      ddl-auto: create and drop
+      hbm2ddl:
+        auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 8080

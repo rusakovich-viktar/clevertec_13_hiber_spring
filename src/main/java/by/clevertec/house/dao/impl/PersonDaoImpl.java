@@ -21,10 +21,6 @@ public class PersonDaoImpl implements PersonDao {
         return entityManager.find(PersonEntity.class, id);
     }
 
-    //    @Override
-//    public List<PersonEntity> getAllPersons() {
-//        return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class).getResultList();
-//    }
     @Override
     public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)

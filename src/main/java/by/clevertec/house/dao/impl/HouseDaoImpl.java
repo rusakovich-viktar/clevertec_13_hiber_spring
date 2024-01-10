@@ -20,11 +20,6 @@ public class HouseDaoImpl implements HouseDao {
         return entityManager.find(HouseEntity.class, id);
     }
 
-//    @Override
-//    public List<HouseEntity> getAllHouses() {
-//        return entityManager.createQuery("SELECT h FROM HouseEntity h", HouseEntity.class).getResultList();
-//    }
-
     public List<HouseEntity> getAllHouses(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT h FROM HouseEntity h", HouseEntity.class)
                 .setFirstResult((pageNumber - 1) * pageSize)

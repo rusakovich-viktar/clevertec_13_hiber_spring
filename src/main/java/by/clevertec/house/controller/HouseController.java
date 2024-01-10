@@ -29,11 +29,6 @@ public class HouseController {
 
     }
 
-    //    @GetMapping
-//    public ResponseEntity<List<HouseDto>> getAllHouses() {
-//        List<HouseDto> houses = houseService.getAllHouses();
-//        return new ResponseEntity<>(houses, HttpStatus.OK);
-//    }
     @GetMapping
     public ResponseEntity<List<HouseDto>> getAllHouses(
             @RequestParam(defaultValue = "1") int pageNumber,
