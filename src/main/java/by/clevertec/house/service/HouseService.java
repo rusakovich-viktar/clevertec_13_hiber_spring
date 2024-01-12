@@ -1,20 +1,20 @@
 package by.clevertec.house.service;
 
-import by.clevertec.house.dto.HouseDto;
-import by.clevertec.house.dto.PersonDto;
+import by.clevertec.house.dto.HouseRequestDto;
+import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.PersonResponseDto;
 import java.util.List;
 
 public interface HouseService {
-    HouseDto getHouseById(Long id);
+    HouseResponseDto getHouseById(Long id);
 
-    //    List<HouseDto> getAllHouses();
-    List<HouseDto> getAllHouses(int pageNumber, int pageSize);
+    List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize);
 
-    void saveHouse(HouseDto house);
+    void saveHouse(HouseRequestDto houseDto);
 
-    void updateHouse(HouseDto house);
+    void updateHouse(Long id, HouseRequestDto houseDto);
 
     void deleteHouse(Long id);
 
-    List<PersonDto> getResidents(Long houseId);
+    List<PersonResponseDto> getResidents(Long houseId);
 }

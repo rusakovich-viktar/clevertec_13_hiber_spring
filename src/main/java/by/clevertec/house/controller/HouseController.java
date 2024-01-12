@@ -1,6 +1,7 @@
 package by.clevertec.house.controller;
 
-import by.clevertec.house.dto.HouseDto;
+import by.clevertec.house.dto.HouseRequestDto;
+import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.service.HouseService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,29 +24,28 @@ public class HouseController {
     private final HouseService houseService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<HouseDto> getHouseById(@PathVariable Long id) {
-        HouseDto house = houseService.getHouseById(id);
+    public ResponseEntity<HouseResponseDto> getHouseById(@PathVariable Long id) {
+        HouseResponseDto house = houseService.getHouseById(id);
         return new ResponseEntity<>(house, HttpStatus.OK);
-
     }
 
     @GetMapping
-    public ResponseEntity<List<HouseDto>> getAllHouses(
+    public ResponseEntity<List<HouseResponseDto>> getAllHouses(
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(defaultValue = "15") int pageSize) {
-        List<HouseDto> houses = houseService.getAllHouses(pageNumber, pageSize);
+        List<HouseResponseDto> houses = houseService.getAllHouses(pageNumber, pageSize);
         return new ResponseEntity<>(houses, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveHouse(@RequestBody HouseDto house) {
+    public ResponseEntity<Void> saveHouse(@RequestBody HouseRequestDto house) {
         houseService.saveHouse(house);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateHouse(@RequestBody HouseDto house) {
-        houseService.updateHouse(house);
+    public ResponseEntity<Void> updateHouse(@PathVariable Long id,@RequestBody HouseRequestDto house) {
+        houseService.updateHouse(id,house);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

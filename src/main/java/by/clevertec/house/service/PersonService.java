@@ -1,22 +1,23 @@
 package by.clevertec.house.service;
 
-import by.clevertec.house.dto.HouseDto;
-import by.clevertec.house.dto.PersonDto;
+import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.PersonRequestDto;
+import by.clevertec.house.dto.PersonResponseDto;
 import java.util.List;
+import java.util.UUID;
 
 public interface PersonService {
-    PersonDto getPersonById(Long id);
+    PersonResponseDto getPersonByUuid(UUID uuid);
 
-    //    List<PersonDto> getAllPersons();
-    List<PersonDto> getAllPersons(int pageNumber, int pageSize);
+    List<PersonResponseDto> getAllPersons(int pageNumber, int pageSize);
 
-    void savePerson(PersonDto person);
+    void savePerson(PersonRequestDto person);
 
-    void updatePerson(PersonDto person);
+    void updatePerson(UUID uuid, PersonRequestDto person);
 
-    void deletePerson(Long id);
+    void deletePerson(UUID uuid);
 
-    List<HouseDto> getOwnedHouses(Long personId);
+    List<HouseResponseDto> getOwnedHouses(UUID uuid);
 
 }
 

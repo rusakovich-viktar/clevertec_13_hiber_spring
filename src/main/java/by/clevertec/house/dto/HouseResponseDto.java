@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class HouseDto {
+public class HouseResponseDto {
     private UUID uuid;
     private double area;
     private String country;
@@ -15,6 +15,6 @@ public class HouseDto {
     private String street;
     private String number;
     private String createDateIso;
-    private List<UUID> residentUuids;
-    private List<UUID> ownerUuids;
+//    private List<UUID> residentUuids;
+//    private List<UUID> ownerUuids;
 }

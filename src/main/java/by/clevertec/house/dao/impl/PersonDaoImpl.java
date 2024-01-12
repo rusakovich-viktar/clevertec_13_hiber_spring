@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-//@Transactional
+@Transactional
 @Repository
 @RequiredArgsConstructor
 public class PersonDaoImpl implements PersonDao {
@@ -17,10 +18,16 @@ public class PersonDaoImpl implements PersonDao {
     private final EntityManager entityManager;
 
     @Override
-    public PersonEntity getPersonById(Long id) {
-        return entityManager.find(PersonEntity.class, id);
+    public PersonEntity getPersonByUuid(UUID uuid) {
+        List<PersonEntity> results = entityManager.createQuery("SELECT p FROM PersonEntity p WHERE p.uuid = :uuid", PersonEntity.class)
+                .setParameter("uuid", uuid)
+                .getResultList();
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException("Person with UUID " + uuid + " does not exist");
+        } else {
+            return results.get(0);
+        }
     }
-
     @Override
     public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)
@@ -40,15 +47,11 @@ public class PersonDaoImpl implements PersonDao {
     }
 
     @Override
-    public void deletePerson(Long id) {
-        PersonEntity person = getPersonById(id);
+    public void deletePerson(UUID uuid) {
+        PersonEntity person = getPersonByUuid(uuid);
         if (person != null) {
             entityManager.remove(person);
         }
     }
 
-    @Override
-    public PersonEntity getPersonByUuid(UUID uuid) {
-        return entityManager.find(PersonEntity.class, uuid);
-    }
 }

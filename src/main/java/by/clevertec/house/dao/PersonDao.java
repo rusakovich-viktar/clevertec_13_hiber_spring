@@ -6,16 +6,14 @@ import java.util.UUID;
 
 public interface PersonDao {
 
-    PersonEntity getPersonById(Long id);
+    PersonEntity getPersonByUuid(UUID uuid);
 
-    //    List<PersonEntity> getAllPersons();
     List<PersonEntity> getAllPersons(int pageNumber, int pageSize);
 
     void savePerson(PersonEntity person);
 
     void updatePerson(PersonEntity person);
 
-    void deletePerson(Long id);
+    void deletePerson(UUID uuid);
 
-    PersonEntity getPersonByUuid(UUID uuid);
 }

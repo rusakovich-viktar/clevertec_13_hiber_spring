@@ -13,8 +13,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -26,7 +28,7 @@ public class HouseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private UUID uuid;
 
     private double area;
@@ -38,14 +40,20 @@ public class HouseEntity {
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "house")
     private List<PersonEntity> residents;
 
+    @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "house_id"),
             inverseJoinColumns = @JoinColumn(name = "owner_id"))
-    private List<PersonEntity> owners;
+    private Set<PersonEntity> owners;
 
+//    @PrePersist
+//    public void prePersist() {
+//        this.createDate = LocalDateTime.now();
+//    }
 }

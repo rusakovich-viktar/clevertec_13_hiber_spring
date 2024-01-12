@@ -4,13 +4,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/house
     username: postgres
     password: postgres
-
   jpa:
     hibernate:
       hbm2ddl:
-        auto: update
+        auto: create-drop
+#        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
       dialect: org.hibernate.dialect.PostgreSQLDialect
-
-server:
-  port: 8080
 
