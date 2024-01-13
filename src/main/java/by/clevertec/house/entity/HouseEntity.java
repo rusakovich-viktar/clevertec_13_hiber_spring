@@ -15,11 +15,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "houses")
@@ -40,12 +44,13 @@ public class HouseEntity {
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;
 
-    @EqualsAndHashCode.Exclude
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "house")
+//    @EqualsAndHashCode.Exclude
+    @OneToMany( mappedBy = "house")
     private List<PersonEntity> residents;
 
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(fetch = FetchType.EAGER)
+//    @EqualsAndHashCode.Exclude
+    //TODO
+    @ManyToMany()
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "house_id"),

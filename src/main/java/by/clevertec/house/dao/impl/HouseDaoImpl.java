@@ -57,9 +57,6 @@ public class HouseDaoImpl implements HouseDao {
 
     @Override
     public List<HouseEntity> getHousesByOwnerUuid(UUID uuid) {
-        if (uuid == null) {
-            throw new IllegalArgumentException("UUID cannot be null");
-        }
         List<HouseEntity> houses = entityManager.createQuery("SELECT h FROM HouseEntity h JOIN h.owners o WHERE o.uuid = :ownerUuid", HouseEntity.class)
                 .setParameter("ownerUuid", uuid)
                 .getResultList();

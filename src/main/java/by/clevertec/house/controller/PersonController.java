@@ -33,7 +33,7 @@ public class PersonController {
     @GetMapping("/{uuid}")
     public ResponseEntity<PersonResponseDto> getPersonByUuid(@PathVariable UUID uuid) {
         PersonResponseDto person = personService.getPersonByUuid(uuid);
-        return new ResponseEntity<>(person, HttpStatus.OK);
+        return ResponseEntity.ok(person);
     }
 
     @GetMapping
@@ -41,7 +41,10 @@ public class PersonController {
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(defaultValue = "15") int pageSize) {
         List<PersonResponseDto> persons = personService.getAllPersons(pageNumber, pageSize);
-        return new ResponseEntity<>(persons, HttpStatus.OK);
+        if (persons.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(persons);
     }
 
     @PostMapping
@@ -51,7 +54,8 @@ public class PersonController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<Void> updatePerson(@PathVariable UUID uuid, @RequestBody PersonRequestDto person) {
+    public ResponseEntity<Void> updatePerson(@PathVariable UUID uuid,
+                                             @RequestBody PersonRequestDto person) {
         personService.updatePerson(uuid, person);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -67,7 +71,6 @@ public class PersonController {
     public ResponseEntity<Void> deletePerson(@PathVariable UUID uuid) {
         personService.deletePerson(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        //TODO REMOVE RESPONSE STATUS
     }
 
     @GetMapping("/{uuid}/ownedHouses")
@@ -76,6 +79,6 @@ public class PersonController {
         if (ownedHouses.isEmpty()) {
             throw EntityNotFoundException.of(HouseEntity.class, uuid);
         }
-        return new ResponseEntity<>(ownedHouses, HttpStatus.OK);
+        return ResponseEntity.ok(ownedHouses);
     }
 }

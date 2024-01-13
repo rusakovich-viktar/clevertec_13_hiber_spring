@@ -10,8 +10,12 @@ import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.service.HouseService;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -52,31 +56,33 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         HouseEntity houseEntity = houseDao.getHouseByUuid(uuid);
-        if (houseDto.getArea() != null) {
-            houseEntity.setArea(houseDto.getArea());
-        }
-        if (houseDto.getCountry() != null) {
-            houseEntity.setCountry(houseDto.getCountry());
-        }
-        if (houseDto.getCity() != null) {
-            houseEntity.setCity(houseDto.getCity());
-        }
-        if (houseDto.getStreet() != null) {
-            houseEntity.setStreet(houseDto.getStreet());
-        }
-        if (houseDto.getNumber() != null) {
-            houseEntity.setNumber(houseDto.getNumber());
-        }
-        houseDao.updateHouse(houseEntity);
 
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("area", houseDto.getArea());
+        fields.put("country", houseDto.getCountry());
+        fields.put("city", houseDto.getCity());
+        fields.put("street", houseDto.getStreet());
+        fields.put("number", houseDto.getNumber());
+
+        for (Map.Entry<String, Object> field : fields.entrySet()) {
+            if (field.getValue() == null) {
+                throw new IllegalArgumentException("Поле '" + field.getKey() + "' не может быть null");
+            }
+        }
+
+        houseEntity.setArea(houseDto.getArea());
+        houseEntity.setCountry(houseDto.getCountry());
+        houseEntity.setCity(houseDto.getCity());
+        houseEntity.setStreet(houseDto.getStreet());
+        houseEntity.setNumber(houseDto.getNumber());
+
+        houseDao.updateHouse(houseEntity);
     }
+
 
     @Override
     public void deleteHouse(UUID uuid) {
         HouseEntity house = houseDao.getHouseByUuid(uuid);
-        if (house == null) {
-            throw EntityNotFoundException.of(HouseEntity.class, uuid);
-        }
         //Пытается удалить дом, но если там будет жить человек - не дает этого сделать (специально),
         // так как человек не может остаться без жилища.
         houseDao.deleteHouse(uuid);

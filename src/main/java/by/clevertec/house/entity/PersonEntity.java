@@ -1,12 +1,10 @@
 package by.clevertec.house.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,13 +17,14 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"passport_series", "passport_number"}))
@@ -53,12 +52,10 @@ public class PersonEntity {
     private LocalDateTime updateDate;
 
     @ManyToOne
-    @EqualsAndHashCode.Exclude
     @JoinColumn(name = "house_id", nullable = false)
     private HouseEntity house;
 
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "owners")
+    @ManyToMany(mappedBy = "owners")
     private List<HouseEntity> ownedHouses;
 
     @PrePersist

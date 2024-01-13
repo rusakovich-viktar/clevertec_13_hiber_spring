@@ -28,7 +28,7 @@ dependencies {
     implementation "org.yaml:snakeyaml:2.1"
     implementation 'org.postgresql:postgresql:42.5.4'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    implementation 'org.projectlombok:lombok:1.18.26'
+//    implementation 'org.projectlombok:lombok:1.18.26'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testImplementation 'org.mockito:mockito-core:5.2.0'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
@@ -47,6 +47,19 @@ compileJava {
             '-Amapstruct.suppressGeneratorVersionInfoComment=true',
             '-Amapstruct.verbose=true'
     ]
+}
+
+jar {
+    enabled = false
+}
+
+war {
+    archiveFileName = "house.war"
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    from(sourceSets.main.output)
+    manifest {
+        attributes 'Implementation-Title': 'house'
+    }
 }
 
 test {

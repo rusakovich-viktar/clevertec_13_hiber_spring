@@ -30,7 +30,7 @@ public class HouseController {
     @GetMapping("/{uuid}")
     public ResponseEntity<HouseResponseDto> getHouseByUuid(@PathVariable UUID uuid) {
         HouseResponseDto house = houseService.getHouseByUuid(uuid);
-        return new ResponseEntity<>(house, HttpStatus.OK);
+        return ResponseEntity.ok(house);
     }
 
     @GetMapping
@@ -41,36 +41,23 @@ public class HouseController {
         if (houses.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(houses, HttpStatus.OK);
+        return ResponseEntity.ok(houses);
     }
 
     @PostMapping
     public ResponseEntity<Void> saveHouse(@RequestBody HouseRequestDto house) {
-        if (house == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         houseService.saveHouse(house);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{uuid}")
     public ResponseEntity<Void> updateHouse(@PathVariable UUID uuid, @RequestBody HouseRequestDto house) {
-        if (house == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        try {
             houseService.updateHouse(uuid, house);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<Void> updateHouseFields(@PathVariable UUID uuid, @RequestBody Map<String, Object> updates) {
-        if (updates == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         try {
             houseService.updateHouseFields(uuid, updates);
         } catch (IllegalArgumentException e) {
@@ -95,6 +82,6 @@ public class HouseController {
         if (residents.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(residents, HttpStatus.OK);
+        return ResponseEntity.ok(residents);
     }
 }

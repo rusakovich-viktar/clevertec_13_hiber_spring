@@ -3,10 +3,13 @@ package by.clevertec.house.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Embeddable
 public class PassportData {
     @Column(name = "passport_series", nullable = false)

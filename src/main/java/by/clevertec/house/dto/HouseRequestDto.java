@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HouseRequestDto {
     private UUID uuid;
+//    @NotNull
     private Double area;
     private String country;
     private String city;

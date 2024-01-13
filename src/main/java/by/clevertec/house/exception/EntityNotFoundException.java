@@ -10,10 +10,6 @@ public class EntityNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public EntityNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public static EntityNotFoundException of(Class<?> clazz, Object field) {
         return new EntityNotFoundException(clazz.getSimpleName() + " with UUID " + field + " does not exist");
     }
