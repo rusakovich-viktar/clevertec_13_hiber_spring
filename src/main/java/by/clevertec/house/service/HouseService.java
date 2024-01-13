@@ -4,17 +4,21 @@ import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public interface HouseService {
-    HouseResponseDto getHouseById(Long id);
+    HouseResponseDto getHouseByUuid(UUID uuid);
 
     List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize);
 
     void saveHouse(HouseRequestDto houseDto);
 
-    void updateHouse(Long id, HouseRequestDto houseDto);
+    void updateHouse(UUID uuid, HouseRequestDto houseDto);
 
-    void deleteHouse(Long id);
+    void deleteHouse(UUID uuid);
 
-    List<PersonResponseDto> getResidents(Long houseId);
+    void updateHouseFields(UUID uuid, Map<String, Object> updates);
+
+    List<PersonResponseDto> getResidents(UUID uuid);
 }

@@ -18,6 +18,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Data;
@@ -58,7 +59,7 @@ public class PersonEntity {
 
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "owners")
-    private Set<HouseEntity> ownedHouses;
+    private List<HouseEntity> ownedHouses;
 
     @PrePersist
     public void prePersist() {

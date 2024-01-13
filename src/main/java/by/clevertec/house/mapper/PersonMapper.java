@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
@@ -29,13 +28,6 @@ public interface PersonMapper {
     default String convertToIsoDate(LocalDateTime date) {
         return date.format(DateTimeFormatter.ISO_DATE_TIME);
     }
-
-//    @AfterMapping
-//    default void setDates(@MappingTarget PersonEntity entity) {
-//        LocalDateTime now = LocalDateTime.now();
-//        entity.setCreateDate(now);
-//        entity.setUpdateDate(now);
-//    }
 
 
     @Named("houseToUuid")

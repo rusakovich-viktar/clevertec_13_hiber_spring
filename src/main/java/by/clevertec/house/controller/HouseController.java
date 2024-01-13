@@ -2,13 +2,17 @@ package by.clevertec.house.controller;
 
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.service.HouseService;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class HouseController {
     private final HouseService houseService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<HouseResponseDto> getHouseById(@PathVariable Long id) {
-        HouseResponseDto house = houseService.getHouseById(id);
+    @GetMapping("/{uuid}")
+    public ResponseEntity<HouseResponseDto> getHouseByUuid(@PathVariable UUID uuid) {
+        HouseResponseDto house = houseService.getHouseByUuid(uuid);
         return new ResponseEntity<>(house, HttpStatus.OK);
     }
 
@@ -34,24 +38,63 @@ public class HouseController {
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(defaultValue = "15") int pageSize) {
         List<HouseResponseDto> houses = houseService.getAllHouses(pageNumber, pageSize);
+        if (houses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(houses, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Void> saveHouse(@RequestBody HouseRequestDto house) {
+        if (house == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         houseService.saveHouse(house);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateHouse(@PathVariable Long id,@RequestBody HouseRequestDto house) {
-        houseService.updateHouse(id,house);
+    @PutMapping("/{uuid}")
+    public ResponseEntity<Void> updateHouse(@PathVariable UUID uuid, @RequestBody HouseRequestDto house) {
+        if (house == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            houseService.updateHouse(uuid, house);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHouse(@PathVariable Long id) {
-        houseService.deleteHouse(id);
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<Void> updateHouseFields(@PathVariable UUID uuid, @RequestBody Map<String, Object> updates) {
+        if (updates == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            houseService.updateHouseFields(uuid, updates);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<Void> deleteHouse(@PathVariable UUID uuid) {
+        try {
+            houseService.deleteHouse(uuid);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{uuid}/residents")
+    public ResponseEntity<List<PersonResponseDto>> getResidents(@PathVariable UUID uuid) {
+        List<PersonResponseDto> residents = houseService.getResidents(uuid);
+        if (residents.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(residents, HttpStatus.OK);
     }
 }

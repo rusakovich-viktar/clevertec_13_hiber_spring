@@ -52,8 +52,4 @@ public class HouseEntity {
             inverseJoinColumns = @JoinColumn(name = "owner_id"))
     private Set<PersonEntity> owners;
 
-//    @PrePersist
-//    public void prePersist() {
-//        this.createDate = LocalDateTime.now();
-//    }
 }

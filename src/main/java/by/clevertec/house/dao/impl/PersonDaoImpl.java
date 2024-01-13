@@ -2,7 +2,9 @@ package by.clevertec.house.dao.impl;
 
 import by.clevertec.house.dao.PersonDao;
 import by.clevertec.house.entity.PersonEntity;
+import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.UUID;
@@ -19,15 +21,15 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public PersonEntity getPersonByUuid(UUID uuid) {
-        List<PersonEntity> results = entityManager.createQuery("SELECT p FROM PersonEntity p WHERE p.uuid = :uuid", PersonEntity.class)
-                .setParameter("uuid", uuid)
-                .getResultList();
-        if (results.isEmpty()) {
-            throw new IllegalArgumentException("Person with UUID " + uuid + " does not exist");
-        } else {
-            return results.get(0);
+        try {
+            return entityManager.createQuery("SELECT p FROM PersonEntity p WHERE p.uuid = :uuid", PersonEntity.class)
+                    .setParameter("uuid", uuid)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw EntityNotFoundException.of(PersonEntity.class, uuid);
         }
     }
+
     @Override
     public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)
