@@ -14,6 +14,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Конфигурационный класс для настройки JPA и Hibernate.
+ * Включает управление транзакциями.
+ */
 @Configuration
 @EnableTransactionManagement
 public class PersistenceConfig {
@@ -36,6 +40,11 @@ public class PersistenceConfig {
     @Value("${spring.jpa.hibernate.dialect}")
     private String dialect;
 
+    /**
+     * Создает и настраивает EntityManagerFactory.
+     *
+     * @return Настроенный экземпляр EntityManagerFactory.
+     */
     @Bean
     public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -50,6 +59,12 @@ public class PersistenceConfig {
         return em.getObject();
     }
 
+    /**
+     * Создает и настраивает PlatformTransactionManager.
+     *
+     * @param emf Экземпляр EntityManagerFactory.
+     * @return Настроенный экземпляр PlatformTransactionManager.
+     */
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -58,6 +73,11 @@ public class PersistenceConfig {
         return transactionManager;
     }
 
+    /**
+     * Создает и настраивает DataSource.
+     *
+     * @return Настроенный экземпляр DataSource.
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -68,6 +88,11 @@ public class PersistenceConfig {
         return dataSource;
     }
 
+    /**
+     * Создает и настраивает дополнительные свойства для Hibernate.
+     *
+     * @return Настроенные свойства Hibernate.
+     */
     Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", hbm2ddlAuto);

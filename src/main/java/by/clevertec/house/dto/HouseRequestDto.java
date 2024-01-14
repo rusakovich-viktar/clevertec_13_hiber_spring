@@ -6,6 +6,10 @@ import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO для запроса на создание или обновление дома.
+ * Содержит информацию о доме и его связях с персонами.
+ */
 @Data
 @NoArgsConstructor
 public class HouseRequestDto {

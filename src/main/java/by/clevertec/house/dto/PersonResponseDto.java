@@ -6,6 +6,10 @@ import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO для ответа с информацией о персоне.
+ * Содержит информацию о персоне и его связях с домами.
+ */
 @Data
 @NoArgsConstructor
 public class PersonResponseDto {

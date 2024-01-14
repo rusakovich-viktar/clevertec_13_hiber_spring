@@ -3,11 +3,14 @@ package by.clevertec.house.exception;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Класс для представления ошибки.
+ * Содержит информацию о времени ошибки, сообщении об ошибке и подробностях.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

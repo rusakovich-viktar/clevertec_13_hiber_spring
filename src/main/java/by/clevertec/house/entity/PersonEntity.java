@@ -22,6 +22,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * PersonEntity.
+ * Содержит информацию о персоне и его связях с домами.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

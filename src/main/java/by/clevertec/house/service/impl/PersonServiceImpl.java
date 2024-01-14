@@ -28,6 +28,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Реализация сервиса для работы с персонами.
+ * Обрабатывает бизнес-логику, связанную с персонами.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,11 +41,24 @@ public class PersonServiceImpl implements PersonService {
     private final PersonMapper personMapper;
     private final HouseMapper houseMapper;
 
+    /**
+     * Получает DTO персоны по его UUID.
+     *
+     * @param uuid UUID персоны.
+     * @return DTO персоны.
+     */
     @Override
     public PersonResponseDto getPersonByUuid(UUID uuid) {
         return personMapper.toDto(personDao.getPersonByUuid(uuid));
     }
 
+    /**
+     * Получает список всех DTO персон с пагинацией.
+     *
+     * @param pageNumber номер страницы.
+     * @param pageSize   размер страницы.
+     * @return Список DTO персон.
+     */
     @Override
     public List<PersonResponseDto> getAllPersons(int pageNumber, int pageSize) {
         return personDao.getAllPersons(pageNumber, pageSize).stream()
@@ -49,6 +66,11 @@ public class PersonServiceImpl implements PersonService {
                 .collect(toList());
     }
 
+    /**
+     * Сохраняет DTO персоны в базе данных.
+     *
+     * @param personDto DTO персоны.
+     */
     @Override
     public void savePerson(PersonRequestDto personDto) {
         PersonEntity mappedPerson = personMapper.toEntity(personDto);
@@ -69,6 +91,12 @@ public class PersonServiceImpl implements PersonService {
         personDao.savePerson(mappedPerson);
     }
 
+    /**
+     * Обновляет DTO персоны в базе данных по его UUID.
+     *
+     * @param uuid      UUID персоны.
+     * @param personDto DTO персоны с новой информацией.
+     */
     @Override
     public void updatePerson(UUID uuid, @Valid PersonRequestDto personDto) {
         PersonEntity existingPerson = personDao.getPersonByUuid(uuid);
@@ -80,7 +108,11 @@ public class PersonServiceImpl implements PersonService {
         personDao.updatePerson(existingPerson);
     }
 
-
+    /**
+     * Удаляет персону по его UUID из базы данных.
+     *
+     * @param uuid UUID персоны.
+     */
     @Override
     public void deletePerson(UUID uuid) {
         PersonEntity person = personDao.getPersonByUuid(uuid);
@@ -94,6 +126,12 @@ public class PersonServiceImpl implements PersonService {
         personDao.deletePerson(uuid);
     }
 
+    /**
+     * Обновляет определенные поля персоны по его UUID.
+     *
+     * @param uuid    UUID персоны.
+     * @param updates Map с обновлениями полей.
+     */
     public void updatePersonFields(UUID uuid, Map<String, Object> updates) {
         PersonEntity existingPerson = personDao.getPersonByUuid(uuid);
         ObjectMapper mapper = new ObjectMapper();
@@ -103,7 +141,8 @@ public class PersonServiceImpl implements PersonService {
                     case "name" -> existingPerson.setName((String) value);
                     case "surname" -> existingPerson.setSurname((String) value);
                     case "sex" -> existingPerson.setSex(Sex.valueOf((String) value));
-                    case "passportData" -> existingPerson.setPassportData(mapper.convertValue(value, PassportData.class));
+                    case "passportData" ->
+                            existingPerson.setPassportData(mapper.convertValue(value, PassportData.class));
                     case "houseUuid" -> {
                         UUID houseUuid = UUID.fromString((String) value);
                         if (!houseUuid.equals(existingPerson.getHouse().getUuid())) {
@@ -116,6 +155,12 @@ public class PersonServiceImpl implements PersonService {
         personDao.updatePerson(existingPerson);
     }
 
+    /**
+     * Получает список DTO домов, принадлежащих персоне по его UUID.
+     *
+     * @param personUuid UUID персоны.
+     * @return Список DTO домов.
+     */
     @Override
     public List<HouseResponseDto> getOwnedHouses(UUID personUuid) {
         Optional.ofNullable(personUuid).orElseThrow(() -> new IllegalArgumentException("UUID cannot be null"));
@@ -123,6 +168,12 @@ public class PersonServiceImpl implements PersonService {
         return houses.isEmpty() ? Collections.emptyList() : houses.stream().map(houseMapper::toDto).collect(toList());
     }
 
+    /**
+     * Обновляет детали персоны на основе DTO.
+     *
+     * @param person Сущность персоны для обновления.
+     * @param dto    DTO с новыми данными персоны.
+     */
     private void updatePersonDetails(PersonEntity person, PersonRequestDto dto) {
         person.setName(dto.getName());
         person.setSurname(dto.getSurname());
@@ -130,7 +181,12 @@ public class PersonServiceImpl implements PersonService {
         person.setPassportData(convertToPassportData(dto.getPassportData()));
     }
 
-
+    /**
+     * Обновляет дом персоны на основе DTO.
+     *
+     * @param person Сущность персоны для обновления.
+     * @param dto    DTO с новыми данными персоны.
+     */
     private void updateHouse(PersonEntity person, PersonRequestDto dto) {
         if (dto.getHouseUuid() != null && !dto.getHouseUuid().equals(person.getHouse().getUuid())) {
             HouseEntity houseEntity = returnHouseResidentIfExist(dto);
@@ -138,6 +194,12 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
+    /**
+     * Обновляет список домов, принадлежащих персоне, на основе DTO.
+     *
+     * @param person Сущность персоны для обновления.
+     * @param dto    DTO с новыми данными персоны.
+     */
     private void updateOwnedHouses(PersonEntity person, PersonRequestDto dto) {
         if (dto.getOwnedHouseUuids() != null) {
             List<UUID> dtoUuids = new ArrayList<>(dto.getOwnedHouseUuids());
@@ -158,6 +220,12 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
+    /**
+     * Конвертирует DTO данных паспорта в сущность данных паспорта.
+     *
+     * @param dto DTO данных паспорта.
+     * @return Сущность данных паспорта.
+     */
     private PassportData convertToPassportData(PassportDataDto dto) {
         PassportData data = new PassportData();
         data.setPassportSeries(dto.getPassportSeries());
@@ -165,6 +233,12 @@ public class PersonServiceImpl implements PersonService {
         return data;
     }
 
+    /**
+     * Получает список сущностей домов, принадлежащих персоне, если они существуют.
+     *
+     * @param personDto DTO персоны.
+     * @return Список сущностей домов.
+     */
     private List<HouseEntity> getListHouseOwnersIfExist(PersonRequestDto personDto) {
         List<UUID> ownedHouseUuids = personDto.getOwnedHouseUuids();
         if (ownedHouseUuids == null || ownedHouseUuids.isEmpty()) {
@@ -182,6 +256,14 @@ public class PersonServiceImpl implements PersonService {
                 .collect(toList());
     }
 
+    /**
+     * Возвращает сущность дома, в котором проживает персона, если она существует.
+     *
+     * @param personDto DTO персоны.
+     * @return Сущность дома.
+     * @throws IllegalArgumentException если UUID отсутствует.
+     * @throws EntityNotFoundException  если дом не найден.
+     */
     private HouseEntity returnHouseResidentIfExist(PersonRequestDto personDto) {
         UUID houseUuid = personDto.getHouseUuid();
         if (houseUuid == null) {

@@ -10,6 +10,10 @@ import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO для запроса на создание или обновление персоны.
+ * Содержит информацию о персоне и его связях с домами.
+ */
 @Data
 @NoArgsConstructor
 public class PersonRequestDto {
@@ -26,6 +30,9 @@ public class PersonRequestDto {
     private UUID houseUuid;
     private List<UUID> ownedHouseUuids;
 
+    /**
+     * Вложенный класс DTO для данных паспорта персоны.
+     */
     @Data
     public static class PassportDataDto {
         @Size(min = 2, max = 2, message = "Длина серии паспорта должна быть ровно 2 символа")

@@ -1,3 +1,35 @@
+
+
+# :satellite: О проекте  
+Web приложение учёта домов и жильцов
+Реализованы все задачи из задания, кроме полнотекстового поиска.
+## :gear: Как запустить проект:
+
+```bash
+
+0. Склонировать репозиторий себе на компьютер
+
+1.Запускаем контейнер сервлетов Tomcat.
+
+2.Скрипты запускаются автоматически через flywayMigration. Переключатель для включения-выключения Flyway в application.yml
+flyway:
+  enabled: true
+
+Также инициализировать базу можно через JPA переключив перекоючатель из положения none в create   
+jpa:
+    hibernate:
+      hbm2ddl:
+        auto: none  
+
+3.Скрипты для ручного запуска находятся в resources/db/migration
+4. Для упрощения тестирования в resources/HousesProject.postman-collection.json лежит файл экспорта из POSTMAN
+```
+
+![postman](src/main/resources/static/image/img.png)
+
+![db](src/main/resources/static/image/db.png)
+
+
 Task - Hibernate
 Создать Web приложение учёта домов и жильцов
 
@@ -32,21 +64,21 @@ Person:
 +Поля представлены для хранения в базе данных. В коде могут отличаться
 
 Обязательно:
-GET для всех Person проживающих в House
-GET для всех House, владельцем которых является Person
++GET для всех Person проживающих в House
++GET для всех House, владельцем которых является Person
 +Конфигурационный файл: application.yml
-Скрипты для создания таблиц должны лежать в classpath:db/
++Скрипты для создания таблиц должны лежать в classpath:db/
 +create_date, update_date - возвращать в формате ISO-8601 (https://en.wikipedia.org/wiki/ISO_8601). Пример: 2018-08-29T06:12:15.156.
-Добавить 5 домов и 10 жильцов. Один дом без жильцов и как минимум в 1 доме больше 1 владельца
++Добавить 5 домов и 10 жильцов. Один дом без жильцов и как минимум в 1 доме больше 1 владельца
 
 
 
 
 Дополнительно:
-*Добавить миграцию
++*Добавить миграцию
 *Полнотекстовый поиск (любое текстовое поле) для House
 *Полнотекстовый поиск (любое текстовое поле) для Person
-**PATCH для Person и House
+++**PATCH для Person и House
 
 Application requirements
 JDK version: 17 – use Streams, java.time.*, etc. where it is possible.

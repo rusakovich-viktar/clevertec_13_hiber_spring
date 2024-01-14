@@ -23,6 +23,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Реализация сервиса для работы с домами.
+ * Обрабатывает бизнес-логику, связанную с домами.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,12 +41,24 @@ public class HouseServiceImpl implements HouseService {
     private final PersonMapper personMapper;
     private final Validator validator;
 
-
+    /**
+     * Получает DTO дома по его UUID.
+     *
+     * @param uuid UUID дома.
+     * @return DTO дома.
+     */
     @Override
     public HouseResponseDto getHouseByUuid(UUID uuid) {
         return houseMapper.toDto(houseDao.getHouseByUuid(uuid));
     }
 
+    /**
+     * Получает список всех DTO домов с пагинацией.
+     *
+     * @param pageNumber номер страницы.
+     * @param pageSize   размер страницы.
+     * @return Список DTO домов.
+     */
     @Override
     public List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize) {
         return houseDao.getAllHouses(pageNumber, pageSize).stream()
@@ -50,6 +66,11 @@ public class HouseServiceImpl implements HouseService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Сохраняет DTO дома в базе данных.
+     *
+     * @param houseDto DTO дома.
+     */
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
         HouseEntity houseEntity = houseMapper.toEntity(houseDto);
@@ -60,6 +81,12 @@ public class HouseServiceImpl implements HouseService {
         houseDao.saveHouse(houseEntity);
     }
 
+    /**
+     * Обновляет DTO дома в базе данных по его UUID.
+     *
+     * @param uuid     UUID дома.
+     * @param houseDto DTO дома с новой информацией.
+     */
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
@@ -78,11 +105,22 @@ public class HouseServiceImpl implements HouseService {
         houseDao.updateHouse(houseEntity);
     }
 
+    /**
+     * Удаляет дом по его UUID из базы данных.
+     *
+     * @param uuid UUID дома.
+     */
     @Override
     public void deleteHouse(UUID uuid) {
         houseDao.deleteHouse(uuid);
     }
 
+    /**
+     * Обновляет определенные поля дома по его UUID.
+     *
+     * @param uuid    UUID дома.
+     * @param updates Map с обновлениями полей.
+     */
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
         HouseEntity existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
@@ -101,6 +139,12 @@ public class HouseServiceImpl implements HouseService {
         houseDao.updateHouse(existingHouse);
     }
 
+    /**
+     * Получает список DTO персон, проживающих в доме по его UUID.
+     *
+     * @param uuid UUID дома.
+     * @return Список DTO персон.
+     */
     @Override
     public List<PersonResponseDto> getResidents(UUID uuid) {
         HouseEntity house = houseDao.getHouseByUuid(uuid);

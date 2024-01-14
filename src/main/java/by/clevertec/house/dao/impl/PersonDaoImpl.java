@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Реализация DAO для работы с PersonEntity.
+ * Обрабатывает операции с базой данных, связанные с PersonEntity.
+ */
 @Transactional
 @Repository
 @RequiredArgsConstructor
@@ -19,6 +23,13 @@ public class PersonDaoImpl implements PersonDao {
     @PersistenceContext
     private final EntityManager entityManager;
 
+    /**
+     * Получает PersonEntity по его UUID из базы данных.
+     *
+     * @param uuid UUID PersonEntity.
+     * @return PersonEntity.
+     * @throws EntityNotFoundException если PersonEntity не найден.
+     */
     @Override
     public PersonEntity getPersonByUuid(UUID uuid) {
         try {
@@ -30,6 +41,13 @@ public class PersonDaoImpl implements PersonDao {
         }
     }
 
+    /**
+     * Получает все PersonEntity из базы данных с пагинацией.
+     *
+     * @param pageNumber номер страницы.
+     * @param pageSize   размер страницы.
+     * @return Список PersonEntity.
+     */
     @Override
     public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)
@@ -38,16 +56,31 @@ public class PersonDaoImpl implements PersonDao {
                 .getResultList();
     }
 
+    /**
+     * Сохраняет PersonEntity в базе данных.
+     *
+     * @param person PersonEntity.
+     */
     @Override
     public void savePerson(PersonEntity person) {
         entityManager.persist(person);
     }
 
+    /**
+     * Обновляет PersonEntity в базе данных.
+     *
+     * @param person PersonEntity.
+     */
     @Override
     public void updatePerson(PersonEntity person) {
         entityManager.merge(person);
     }
 
+    /**
+     * Удаляет PersonEntity по его UUID из базы данных.
+     *
+     * @param uuid UUID PersonEntity.
+     */
     @Override
     public void deletePerson(UUID uuid) {
         entityManager.createQuery("DELETE FROM PersonEntity p WHERE p.uuid = :uuid")

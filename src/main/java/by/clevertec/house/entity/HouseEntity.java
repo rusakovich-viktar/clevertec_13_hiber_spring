@@ -18,6 +18,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * HouseEntity.
+ * Содержит информацию о доме и его связях с персонами.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

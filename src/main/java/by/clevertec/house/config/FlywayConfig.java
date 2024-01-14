@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Конфигурационный класс для Flyway.
+ * Используется для управления версиями базы данных.
+ */
 @Configuration
 public class FlywayConfig {
 
@@ -20,6 +24,11 @@ public class FlywayConfig {
     @Value("${flyway.enabled:false}")
     private boolean isFlywayEnabled;
 
+    /**
+     * Создает и настраивает экземпляр Flyway.
+     *
+     * @return Настроенный экземпляр Flyway или null, если Flyway отключен.
+     */
     @Bean
     public Flyway flyway() {
         if (!isFlywayEnabled) {

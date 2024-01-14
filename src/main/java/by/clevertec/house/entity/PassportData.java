@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Встраиваемый класс для данных паспорта.
+ * Содержит серию и номер паспорта.
+ */
 @NoArgsConstructor
 @Getter
 @Setter
