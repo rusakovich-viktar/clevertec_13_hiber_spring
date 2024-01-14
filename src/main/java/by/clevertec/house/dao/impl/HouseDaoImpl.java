@@ -5,10 +5,13 @@ import by.clevertec.house.entity.HouseEntity;
 import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +26,49 @@ public class HouseDaoImpl implements HouseDao {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    /**
-     * Получает дом по его UUID из базы данных.
-     *
-     * @param uuid UUID дома.
-     * @return HouseEntity.
-     * @throws EntityNotFoundException если дом не найден.
-     */
+    private final JdbcTemplate jdbcTemplate;
+
+    // МЕТОД РАБОЧИЙ, ПРОСТО ЗАМЕНИЛ НА TEMPLATE
+//    /**
+//     * Получает дом по его UUID из базы данных.
+//     *
+//     * @param uuid UUID дома.
+//     * @return HouseEntity.
+//     * @throws EntityNotFoundException если дом не найден.
+//     */
+//    public HouseEntity getHouseByUuid(UUID uuid) {
+//        Optional<HouseEntity> house = Optional.ofNullable(entityManager.createQuery("SELECT h FROM HouseEntity h WHERE h.uuid = :uuid", HouseEntity.class)
+//                .setParameter("uuid", uuid)
+//                .getResultStream()
+//                .findFirst()
+//                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid)));
+//        return house.get();
+//    }
+
+    @Override
     public HouseEntity getHouseByUuid(UUID uuid) {
-        Optional<HouseEntity> house = Optional.ofNullable(entityManager.createQuery("SELECT h FROM HouseEntity h WHERE h.uuid = :uuid", HouseEntity.class)
-                .setParameter("uuid", uuid)
-                .getResultStream()
-                .findFirst()
-                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid)));
-        return house.get();
+        String sql = "SELECT * FROM houses WHERE uuid = ?";
+        HouseEntity house = jdbcTemplate.queryForObject(sql, new Object[]{uuid}, new RowMapper<HouseEntity>() {
+            @Override
+            public HouseEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                HouseEntity house = new HouseEntity();
+                house.setId(rs.getLong("id"));
+                house.setUuid(UUID.fromString(rs.getString("uuid")));
+                house.setArea(rs.getDouble("area"));
+                house.setCountry(rs.getString("country"));
+                house.setCity(rs.getString("city"));
+                house.setStreet(rs.getString("street"));
+                house.setNumber(rs.getString("number"));
+                house.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+                return house;
+            }
+        });
+
+        if (house == null) {
+            throw EntityNotFoundException.of(HouseEntity.class, uuid);
+        }
+
+        return house;
     }
 
     /**
