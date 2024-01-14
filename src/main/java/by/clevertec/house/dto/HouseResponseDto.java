@@ -1,6 +1,5 @@
 package by.clevertec.house.dto;
 
-import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class HouseResponseDto {
+
     private UUID uuid;
     private double area;
     private String country;
@@ -15,6 +15,4 @@ public class HouseResponseDto {
     private String street;
     private String number;
     private String createDateIso;
-//    private List<UUID> residentUuids;
-//    private List<UUID> ownerUuids;
 }

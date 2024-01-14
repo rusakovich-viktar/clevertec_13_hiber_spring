@@ -45,8 +45,7 @@ public class PersistenceConfig {
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
-
-        em.afterPropertiesSet(); // инициализация FactoryBean
+        em.afterPropertiesSet();
 
         return em.getObject();
     }
@@ -58,7 +57,6 @@ public class PersistenceConfig {
 
         return transactionManager;
     }
-
 
     @Bean
     public DataSource dataSource() {

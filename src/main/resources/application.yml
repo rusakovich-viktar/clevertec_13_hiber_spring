@@ -10,4 +10,5 @@ spring:
         auto: none
 #        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
       dialect: org.hibernate.dialect.PostgreSQLDialect
-
+flyway:
+  enabled: true

@@ -50,10 +50,9 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public void deletePerson(UUID uuid) {
-        PersonEntity person = getPersonByUuid(uuid);
-        if (person != null) {
-            entityManager.remove(person);
-        }
+        entityManager.createQuery("DELETE FROM PersonEntity p WHERE p.uuid = :uuid")
+                .setParameter("uuid", uuid)
+                .executeUpdate();
     }
 
 }
