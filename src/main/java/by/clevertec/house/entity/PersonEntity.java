@@ -18,7 +18,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,11 +34,13 @@ public class PersonEntity {
 
     @Column(nullable = false)
     private UUID uuid;
-
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Sex sex;
 
     @Embedded
@@ -48,7 +49,7 @@ public class PersonEntity {
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "update_date")
+    @Column(name = "update_date", nullable = false)
     private LocalDateTime updateDate;
 
     @ManyToOne

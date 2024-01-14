@@ -1,17 +1,38 @@
 package by.clevertec.house.config;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * The `FlywayConfig` class represents the configuration for Flyway database migration.
- * It contains information about the database URL, username, and password required for migration.
- */
-@Getter
-@Setter
+@Configuration
 public class FlywayConfig {
+
+    @Value("${spring.datasource.url}")
     private String url;
-    private String user;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
     private String password;
 
+    @Value("${flyway.enabled:false}")
+    private boolean isFlywayEnabled;
+
+    @Bean
+    public Flyway flyway() {
+        if (!isFlywayEnabled) {
+            return null;
+        }
+
+        Flyway flyway = Flyway.configure()
+                .dataSource(url, username, password)
+                .baselineVersion("0")
+                .load();
+        flyway.baseline();
+        flyway.migrate();
+
+        return flyway;
+    }
 }

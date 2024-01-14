@@ -9,7 +9,7 @@ SELECT currval(pg_get_serial_sequence('houses', 'id'));
 
 -- Вставляем данные в таблицу persons для первого владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'John', '123456', 'AB', 'MALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'John', '1234567', 'AB', 'MALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для первого владельца
@@ -18,7 +18,7 @@ VALUES (currval(pg_get_serial_sequence('houses', 'id')), currval(pg_get_serial_s
 
 -- Вставляем данные в таблицу persons для второго владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Jane', '654321', 'CD', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Jane', '6543210', 'CD', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для второго владельца
@@ -34,7 +34,7 @@ SELECT currval(pg_get_serial_sequence('houses', 'id'));
 
 -- Вставляем данные в таблицу persons для владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Bob', '456789', 'IJ', 'MALE', 'Smith', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Bob', '4567890', 'IJ', 'MALE', 'Smith', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для владельца
@@ -43,7 +43,7 @@ VALUES (currval(pg_get_serial_sequence('houses', 'id')), currval(pg_get_serial_s
 
 -- Вставляем данные в таблицу persons для жильца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Alice Johnson', '345678', 'EF', 'FEMALE', 'Johnson', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Alice', '3456789', 'EF', 'FEMALE', 'Johnson', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Дом 3 без жильцов
@@ -59,7 +59,7 @@ SELECT currval(pg_get_serial_sequence('houses', 'id'));
 
 -- Вставляем данные в таблицу persons для владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Bob Johnson', '901234', 'GH', 'MALE', 'Johnson', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Bob', '9012345', 'GH', 'MALE', 'Johnson', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для владельца
@@ -68,7 +68,7 @@ VALUES (currval(pg_get_serial_sequence('houses', 'id')), currval(pg_get_serial_s
 
 -- Вставляем данные в таблицу persons для жильца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Anna', '223456', 'BB', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Anna', '2234567', 'BB', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Дом 5 с двумя владельцами (персон 7 и 8) и двумя жильцами (персон 9 и 10)
@@ -80,7 +80,7 @@ SELECT currval(pg_get_serial_sequence('houses', 'id'));
 
 -- Вставляем данные в таблицу persons для первого владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Lera', '154321', 'SS', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Lera', '1543210', 'SS', 'FEMALE', 'Doe', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для первого владельца
@@ -89,7 +89,7 @@ VALUES (currval(pg_get_serial_sequence('houses', 'id')), currval(pg_get_serial_s
 
 -- Вставляем данные в таблицу persons для второго владельца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Vasya', '456784', 'IW', 'FEMALE', 'Mask', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Vasya', '4567843', 'IW', 'FEMALE', 'Mask', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу house_owner для второго владельца
@@ -98,7 +98,7 @@ VALUES (currval(pg_get_serial_sequence('houses', 'id')), currval(pg_get_serial_s
 
 -- Вставляем данные в таблицу persons для первого жильца
 INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
-VALUES (CURRENT_TIMESTAMP, 'Ivan', '789012', 'KL', 'MALE', 'Ivanov', CURRENT_TIMESTAMP, uuid_generate_v4(),
+VALUES (CURRENT_TIMESTAMP, 'Ivan', '7801234', 'KL', 'MALE', 'Ivanov', CURRENT_TIMESTAMP, uuid_generate_v4(),
         currval(pg_get_serial_sequence('houses', 'id')));
 
 -- Вставляем данные в таблицу persons для второго жильца

@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,15 +21,13 @@ public class HouseDaoImpl implements HouseDao {
     private final EntityManager entityManager;
 
     public HouseEntity getHouseByUuid(UUID uuid) {
-        try {
-            return entityManager.createQuery("SELECT h FROM HouseEntity h WHERE h.uuid = :uuid", HouseEntity.class)
-                    .setParameter("uuid", uuid)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw EntityNotFoundException.of(HouseEntity.class, uuid);
-        }
+        Optional<HouseEntity> house = Optional.ofNullable(entityManager.createQuery("SELECT h FROM HouseEntity h WHERE h.uuid = :uuid", HouseEntity.class)
+                .setParameter("uuid", uuid)
+                .getResultStream()
+                .findFirst()
+                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid)));
+        return house.get();
     }
-
 
     public List<HouseEntity> getAllHouses(int pageNumber, int pageSize) {
         return entityManager.createQuery("SELECT h FROM HouseEntity h", HouseEntity.class)
@@ -49,11 +48,11 @@ public class HouseDaoImpl implements HouseDao {
 
     @Override
     public void deleteHouse(UUID uuid) {
-        HouseEntity house = getHouseByUuid(uuid);
-        if (house != null) {
-            entityManager.remove(house);
-        }
+        entityManager.createQuery("DELETE FROM HouseEntity h WHERE h.uuid = :uuid")
+                .setParameter("uuid", uuid)
+                .executeUpdate();
     }
+
 
     @Override
     public List<HouseEntity> getHousesByOwnerUuid(UUID uuid) {

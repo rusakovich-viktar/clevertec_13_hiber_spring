@@ -3,14 +3,12 @@ package by.clevertec.house.controller;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonResponseDto;
-import by.clevertec.house.entity.HouseEntity;
-import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.service.PersonService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
     private final PersonService personService;
 
-
     @GetMapping("/{uuid}")
     public ResponseEntity<PersonResponseDto> getPersonByUuid(@PathVariable UUID uuid) {
         PersonResponseDto person = personService.getPersonByUuid(uuid);
@@ -41,44 +38,41 @@ public class PersonController {
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(defaultValue = "15") int pageSize) {
         List<PersonResponseDto> persons = personService.getAllPersons(pageNumber, pageSize);
-        if (persons.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(persons);
+        return persons.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(persons);
     }
 
     @PostMapping
-    public ResponseEntity<Void> savePerson(@RequestBody PersonRequestDto person) {
+    public ResponseEntity<Void> savePerson(@Valid @RequestBody PersonRequestDto person) {
         personService.savePerson(person);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.created(null).build();
     }
 
     @PutMapping("/{uuid}")
     public ResponseEntity<Void> updatePerson(@PathVariable UUID uuid,
-                                             @RequestBody PersonRequestDto person) {
+                                             @Valid @RequestBody PersonRequestDto person) {
         personService.updatePerson(uuid, person);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
-
     @PatchMapping("/{uuid}")
-    public ResponseEntity<Void> updatePersonFields(@PathVariable UUID uuid, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Void> updatePersonFields(@PathVariable UUID uuid, @Valid @RequestBody Map<String, Object> updates) {
         personService.updatePersonFields(uuid, updates);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deletePerson(@PathVariable UUID uuid) {
         personService.deletePerson(uuid);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{uuid}/ownedHouses")
     public ResponseEntity<List<HouseResponseDto>> getOwnedHouses(@PathVariable UUID uuid) {
         List<HouseResponseDto> ownedHouses = personService.getOwnedHouses(uuid);
-        if (ownedHouses.isEmpty()) {
-            throw EntityNotFoundException.of(HouseEntity.class, uuid);
-        }
-        return ResponseEntity.ok(ownedHouses);
+        return ownedHouses.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(ownedHouses);
     }
 }

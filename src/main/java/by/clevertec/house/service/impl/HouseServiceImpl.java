@@ -9,12 +9,13 @@ import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.service.HouseService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,9 +27,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class HouseServiceImpl implements HouseService {
+    public static final String AREA = "area";
+    public static final String COUNTRY = "country";
+    public static final String CITY = "city";
+    public static final String STREET = "street";
+    public static final String NUMBER = "number";
     private final HouseDao houseDao;
     private final HouseMapper houseMapper;
     private final PersonMapper personMapper;
+    private final Validator validator;
 
 
     @Override
@@ -55,20 +62,12 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
-        HouseEntity houseEntity = houseDao.getHouseByUuid(uuid);
-
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("area", houseDto.getArea());
-        fields.put("country", houseDto.getCountry());
-        fields.put("city", houseDto.getCity());
-        fields.put("street", houseDto.getStreet());
-        fields.put("number", houseDto.getNumber());
-
-        for (Map.Entry<String, Object> field : fields.entrySet()) {
-            if (field.getValue() == null) {
-                throw new IllegalArgumentException("Поле '" + field.getKey() + "' не может быть null");
-            }
+        Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
         }
+
+        HouseEntity houseEntity = houseDao.getHouseByUuid(uuid);
 
         houseEntity.setArea(houseDto.getArea());
         houseEntity.setCountry(houseDto.getCountry());
@@ -79,29 +78,23 @@ public class HouseServiceImpl implements HouseService {
         houseDao.updateHouse(houseEntity);
     }
 
-
     @Override
     public void deleteHouse(UUID uuid) {
-        HouseEntity house = houseDao.getHouseByUuid(uuid);
-        //Пытается удалить дом, но если там будет жить человек - не дает этого сделать (специально),
-        // так как человек не может остаться без жилища.
         houseDao.deleteHouse(uuid);
     }
 
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
-        HouseEntity existingHouse = houseDao.getHouseByUuid(uuid);
-        if (existingHouse == null) {
-            throw EntityNotFoundException.of(HouseEntity.class, uuid);
-        }
+        HouseEntity existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
+                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid));
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             if (entry.getValue() != null) {
                 switch (entry.getKey()) {
-                    case "area" -> existingHouse.setArea(Double.parseDouble(entry.getValue().toString()));
-                    case "country" -> existingHouse.setCountry((String) entry.getValue());
-                    case "city" -> existingHouse.setCity((String) entry.getValue());
-                    case "street" -> existingHouse.setStreet((String) entry.getValue());
-                    case "number" -> existingHouse.setNumber((String) entry.getValue());
+                    case AREA -> existingHouse.setArea(Double.parseDouble(entry.getValue().toString()));
+                    case COUNTRY -> existingHouse.setCountry((String) entry.getValue());
+                    case CITY -> existingHouse.setCity((String) entry.getValue());
+                    case STREET -> existingHouse.setStreet((String) entry.getValue());
+                    case NUMBER -> existingHouse.setNumber((String) entry.getValue());
                 }
             }
         }
@@ -117,6 +110,4 @@ public class HouseServiceImpl implements HouseService {
                 .collect(Collectors.toList());
     }
 
-
 }
-
