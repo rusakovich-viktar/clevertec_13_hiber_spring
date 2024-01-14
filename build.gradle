@@ -77,3 +77,4 @@ war {
 test {
     useJUnitPlatform()
 }
+
