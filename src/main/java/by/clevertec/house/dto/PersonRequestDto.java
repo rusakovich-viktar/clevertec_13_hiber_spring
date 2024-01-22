@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PersonRequestDto {
+
     private UUID uuid;
     @NotNull(message = "Поле 'name' не может быть null")
     private String name;
@@ -35,6 +36,7 @@ public class PersonRequestDto {
      */
     @Data
     public static class PassportDataDto {
+
         @Size(min = 2, max = 2, message = "Длина серии паспорта должна быть ровно 2 символа")
         @Pattern(regexp = "[A-Z]{2}")
         private String passportSeries;

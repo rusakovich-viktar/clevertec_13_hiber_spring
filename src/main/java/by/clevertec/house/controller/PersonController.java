@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/persons")
 @RequiredArgsConstructor
 public class PersonController {
+
     private final PersonService personService;
 
     /**

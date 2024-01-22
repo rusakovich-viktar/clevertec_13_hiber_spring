@@ -18,5 +18,5 @@ public class HouseResponseDto {
     private String city;
     private String street;
     private String number;
-    private String createDateIso;
+    private String createDate;
 }

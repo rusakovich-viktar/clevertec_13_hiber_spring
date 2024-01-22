@@ -31,15 +31,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"passport_series", "passport_number"}))
-public class PersonEntity {
+public class Person {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private UUID uuid;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String surname;
 
@@ -58,16 +61,17 @@ public class PersonEntity {
 
     @ManyToOne
     @JoinColumn(name = "house_id", nullable = false)
-    private HouseEntity house;
+    private House house;
 
     @ManyToMany(mappedBy = "owners")
-    private List<HouseEntity> ownedHouses;
+    private List<House> ownedHouses;
 
     @PrePersist
     public void prePersist() {
         if (this.createDate == null) {
-            this.createDate = LocalDateTime.now();
-            this.updateDate = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
+            this.createDate = now;
+            this.updateDate = now;
         }
     }
 

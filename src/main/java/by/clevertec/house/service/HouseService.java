@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface HouseService {
+
     HouseResponseDto getHouseByUuid(UUID uuid);
 
     List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize);

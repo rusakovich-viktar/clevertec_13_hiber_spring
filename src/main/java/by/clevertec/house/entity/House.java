@@ -27,21 +27,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "houses")
-public class HouseEntity {
+public class House {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private UUID uuid;
+
     @Column(nullable = false)
     private double area;
+
     @Column(nullable = false)
     private String country;
+
     @Column(nullable = false)
     private String city;
+
     @Column(nullable = false)
     private String street;
+
     @Column(nullable = false)
     private String number;
 
@@ -49,13 +55,13 @@ public class HouseEntity {
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "house")
-    private List<PersonEntity> residents;
+    private List<Person> residents;
 
     @ManyToMany
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "house_id"),
             inverseJoinColumns = @JoinColumn(name = "owner_id"))
-    private Set<PersonEntity> owners;
+    private Set<Person> owners;
 
 }

@@ -7,6 +7,7 @@ public class Constant {
 
     @UtilityClass
     public class ErrorMessages {
+
         public static final String VALIDATION_ERROR = "Validation error";
         public static final String INVALID_ARGUMENTS = "Invalid arguments provided";
         public static final String ENTITY_NOT_FOUND = "Entity not found";

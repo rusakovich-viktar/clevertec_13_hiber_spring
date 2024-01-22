@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  * Расширяет AbstractAnnotationConfigDispatcherServletInitializer для настройки DispatcherServlet в Spring MVC.
  */
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     /**
      * Получает конфигурационные классы корневого контекста приложения.
      *

@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class HouseRequestDto {
+
     @NotNull(message = "Поле 'uuid' не может быть null")
     private UUID uuid;
+
     @NotNull(message = "Поле 'area' не может быть null")
     private Double area;
 

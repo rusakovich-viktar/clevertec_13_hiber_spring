@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/houses")
 @RequiredArgsConstructor
 public class HouseController {
+
     private final HouseService houseService;
 
     /**

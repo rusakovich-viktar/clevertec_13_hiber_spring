@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     /**
      * Обрабатывает исключения валидации методов.
      *

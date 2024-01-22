@@ -1,17 +1,14 @@
 package by.clevertec.house.dao.impl;
 
 import by.clevertec.house.dao.HouseDao;
-import by.clevertec.house.entity.HouseEntity;
+import by.clevertec.house.entity.House;
 import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @RequiredArgsConstructor
 public class HouseDaoImpl implements HouseDao {
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -46,26 +44,23 @@ public class HouseDaoImpl implements HouseDao {
 //    }
 
     @Override
-    public HouseEntity getHouseByUuid(UUID uuid) {
+    public House getHouseByUuid(UUID uuid) {
         String sql = "SELECT * FROM houses WHERE uuid = ?";
-        HouseEntity house = jdbcTemplate.queryForObject(sql, new Object[]{uuid}, new RowMapper<HouseEntity>() {
-            @Override
-            public HouseEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-                HouseEntity house = new HouseEntity();
-                house.setId(rs.getLong("id"));
-                house.setUuid(UUID.fromString(rs.getString("uuid")));
-                house.setArea(rs.getDouble("area"));
-                house.setCountry(rs.getString("country"));
-                house.setCity(rs.getString("city"));
-                house.setStreet(rs.getString("street"));
-                house.setNumber(rs.getString("number"));
-                house.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
-                return house;
-            }
+        House house = jdbcTemplate.queryForObject(sql, new Object[]{uuid}, (rs, rowNum) -> {
+            House house1 = new House();
+            house1.setId(rs.getLong("id"));
+            house1.setUuid(UUID.fromString(rs.getString("uuid")));
+            house1.setArea(rs.getDouble("area"));
+            house1.setCountry(rs.getString("country"));
+            house1.setCity(rs.getString("city"));
+            house1.setStreet(rs.getString("street"));
+            house1.setNumber(rs.getString("number"));
+            house1.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+            return house1;
         });
 
         if (house == null) {
-            throw EntityNotFoundException.of(HouseEntity.class, uuid);
+            throw EntityNotFoundException.of(House.class, uuid);
         }
 
         return house;
@@ -78,8 +73,9 @@ public class HouseDaoImpl implements HouseDao {
      * @param pageSize   размер страницы.
      * @return Список HouseEntity.
      */
-    public List<HouseEntity> getAllHouses(int pageNumber, int pageSize) {
-        return entityManager.createQuery("SELECT h FROM HouseEntity h", HouseEntity.class)
+    @Override
+    public List<House> getAllHouses(int pageNumber, int pageSize) {
+        return entityManager.createQuery("SELECT h FROM House h", House.class)
                 .setFirstResult((pageNumber - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -91,7 +87,7 @@ public class HouseDaoImpl implements HouseDao {
      * @param house HouseEntity.
      */
     @Override
-    public void saveHouse(HouseEntity house) {
+    public void saveHouse(House house) {
         entityManager.persist(house);
     }
 
@@ -101,7 +97,7 @@ public class HouseDaoImpl implements HouseDao {
      * @param house HouseEntity.
      */
     @Override
-    public void updateHouse(HouseEntity house) {
+    public void updateHouse(House house) {
         entityManager.merge(house);
     }
 
@@ -112,7 +108,7 @@ public class HouseDaoImpl implements HouseDao {
      */
     @Override
     public void deleteHouse(UUID uuid) {
-        entityManager.createQuery("DELETE FROM HouseEntity h WHERE h.uuid = :uuid")
+        entityManager.createQuery("DELETE FROM House h WHERE h.uuid = :uuid")
                 .setParameter("uuid", uuid)
                 .executeUpdate();
     }
@@ -125,8 +121,8 @@ public class HouseDaoImpl implements HouseDao {
      * @throws EntityNotFoundException если HouseEntity, принадлежащие владельцу, не найдены.
      */
     @Override
-    public List<HouseEntity> getHousesByOwnerUuid(UUID uuid) {
-        List<HouseEntity> houses = entityManager.createQuery("SELECT h FROM HouseEntity h JOIN h.owners o WHERE o.uuid = :ownerUuid", HouseEntity.class)
+    public List<House> getHousesByOwnerUuid(UUID uuid) {
+        List<House> houses = entityManager.createQuery("SELECT h FROM House h JOIN h.owners o WHERE o.uuid = :ownerUuid", House.class)
                 .setParameter("ownerUuid", uuid)
                 .getResultList();
         if (houses.isEmpty()) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface PersonService {
+
     PersonResponseDto getPersonByUuid(UUID uuid);
 
     List<PersonResponseDto> getAllPersons(int pageNumber, int pageSize);

@@ -1,20 +1,21 @@
 package by.clevertec.house.dao;
 
-import by.clevertec.house.entity.HouseEntity;
+import by.clevertec.house.entity.House;
 import java.util.List;
 import java.util.UUID;
 
 public interface HouseDao {
-    HouseEntity getHouseByUuid(UUID uuid);
 
-    List<HouseEntity> getAllHouses(int pageNumber, int pageSize);
+    House getHouseByUuid(UUID uuid);
 
-    void saveHouse(HouseEntity house);
+    List<House> getAllHouses(int pageNumber, int pageSize);
 
-    void updateHouse(HouseEntity house);
+    void saveHouse(House house);
+
+    void updateHouse(House house);
 
     void deleteHouse(UUID uuid);
 
-    List<HouseEntity> getHousesByOwnerUuid(UUID uuid);
+    List<House> getHousesByOwnerUuid(UUID uuid);
 
 }

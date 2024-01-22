@@ -4,7 +4,7 @@ import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
-import by.clevertec.house.entity.HouseEntity;
+import by.clevertec.house.entity.House;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class HouseServiceImpl implements HouseService {
+
     public static final String AREA = "area";
     public static final String COUNTRY = "country";
     public static final String CITY = "city";
@@ -73,12 +74,12 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
-        HouseEntity houseEntity = houseMapper.toEntity(houseDto);
-        houseEntity.setCreateDate(LocalDateTime.now());
-        if (houseEntity.getUuid() == null) {
-            houseEntity.setUuid(UUID.randomUUID());
+        House house = houseMapper.toEntity(houseDto);
+        house.setCreateDate(LocalDateTime.now());
+        if (house.getUuid() == null) {
+            house.setUuid(UUID.randomUUID());
         }
-        houseDao.saveHouse(houseEntity);
+        houseDao.saveHouse(house);
     }
 
     /**
@@ -94,15 +95,15 @@ public class HouseServiceImpl implements HouseService {
             throw new ConstraintViolationException(violations);
         }
 
-        HouseEntity houseEntity = houseDao.getHouseByUuid(uuid);
+        House house = houseDao.getHouseByUuid(uuid);
 
-        houseEntity.setArea(houseDto.getArea());
-        houseEntity.setCountry(houseDto.getCountry());
-        houseEntity.setCity(houseDto.getCity());
-        houseEntity.setStreet(houseDto.getStreet());
-        houseEntity.setNumber(houseDto.getNumber());
+        house.setArea(houseDto.getArea());
+        house.setCountry(houseDto.getCountry());
+        house.setCity(houseDto.getCity());
+        house.setStreet(houseDto.getStreet());
+        house.setNumber(houseDto.getNumber());
 
-        houseDao.updateHouse(houseEntity);
+        houseDao.updateHouse(house);
     }
 
     /**
@@ -123,8 +124,8 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
-        HouseEntity existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
-                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid));
+        House existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             if (entry.getValue() != null) {
                 switch (entry.getKey()) {
@@ -147,7 +148,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public List<PersonResponseDto> getResidents(UUID uuid) {
-        HouseEntity house = houseDao.getHouseByUuid(uuid);
+        House house = houseDao.getHouseByUuid(uuid);
         return house.getResidents().stream()
                 .map(personMapper::toDto)
                 .distinct()
