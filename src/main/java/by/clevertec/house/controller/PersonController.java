@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,9 +57,7 @@ public class PersonController {
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(defaultValue = "15") int pageSize) {
         List<PersonResponseDto> persons = personService.getAllPersons(pageNumber, pageSize);
-        return persons.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(persons);
+        return ResponseEntity.ok(persons);
     }
 
     /**
@@ -70,7 +69,7 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<Void> savePerson(@Valid @RequestBody PersonRequestDto person) {
         personService.savePerson(person);
-        return ResponseEntity.created(null).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
@@ -121,8 +120,7 @@ public class PersonController {
     @GetMapping("/{uuid}/ownedHouses")
     public ResponseEntity<List<HouseResponseDto>> getOwnedHouses(@PathVariable UUID uuid) {
         List<HouseResponseDto> ownedHouses = personService.getOwnedHouses(uuid);
-        return ownedHouses.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(ownedHouses);
+        return ResponseEntity.ok(ownedHouses);
+
     }
 }

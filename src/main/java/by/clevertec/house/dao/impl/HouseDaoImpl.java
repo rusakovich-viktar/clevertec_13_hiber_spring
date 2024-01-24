@@ -6,9 +6,9 @@ import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,46 +24,22 @@ public class HouseDaoImpl implements HouseDao {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    private final JdbcTemplate jdbcTemplate;
-
-    // МЕТОД РАБОЧИЙ, ПРОСТО ЗАМЕНИЛ НА TEMPLATE
-//    /**
-//     * Получает дом по его UUID из базы данных.
-//     *
-//     * @param uuid UUID дома.
-//     * @return HouseEntity.
-//     * @throws EntityNotFoundException если дом не найден.
-//     */
-//    public HouseEntity getHouseByUuid(UUID uuid) {
-//        Optional<HouseEntity> house = Optional.ofNullable(entityManager.createQuery("SELECT h FROM HouseEntity h WHERE h.uuid = :uuid", HouseEntity.class)
-//                .setParameter("uuid", uuid)
-//                .getResultStream()
-//                .findFirst()
-//                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid)));
-//        return house.get();
-//    }
-
+    /**
+     * Получает дом по его UUID из базы данных.
+     *
+     * @param uuid UUID дома.
+     * @return HouseEntity.
+     * @throws EntityNotFoundException если дом не найден.
+     */
     @Override
     public House getHouseByUuid(UUID uuid) {
-        String sql = "SELECT * FROM houses WHERE uuid = ?";
-        House house = jdbcTemplate.queryForObject(sql, new Object[]{uuid}, (rs, rowNum) -> {
-            House house1 = new House();
-            house1.setId(rs.getLong("id"));
-            house1.setUuid(UUID.fromString(rs.getString("uuid")));
-            house1.setArea(rs.getDouble("area"));
-            house1.setCountry(rs.getString("country"));
-            house1.setCity(rs.getString("city"));
-            house1.setStreet(rs.getString("street"));
-            house1.setNumber(rs.getString("number"));
-            house1.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
-            return house1;
-        });
-
-        if (house == null) {
-            throw EntityNotFoundException.of(House.class, uuid);
-        }
-
-        return house;
+        Optional<House> house = Optional.ofNullable(entityManager
+                .createQuery("SELECT h FROM House h WHERE h.uuid = :uuid", House.class)
+                .setParameter("uuid", uuid)
+                .getResultStream()
+                .findFirst()
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid)));
+        return house.get();
     }
 
     /**
@@ -75,7 +51,8 @@ public class HouseDaoImpl implements HouseDao {
      */
     @Override
     public List<House> getAllHouses(int pageNumber, int pageSize) {
-        return entityManager.createQuery("SELECT h FROM House h", House.class)
+        return entityManager
+                .createQuery("SELECT h FROM House h", House.class)
                 .setFirstResult((pageNumber - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -108,7 +85,8 @@ public class HouseDaoImpl implements HouseDao {
      */
     @Override
     public void deleteHouse(UUID uuid) {
-        entityManager.createQuery("DELETE FROM House h WHERE h.uuid = :uuid")
+        entityManager
+                .createQuery("DELETE FROM House h WHERE h.uuid = :uuid")
                 .setParameter("uuid", uuid)
                 .executeUpdate();
     }
@@ -122,7 +100,8 @@ public class HouseDaoImpl implements HouseDao {
      */
     @Override
     public List<House> getHousesByOwnerUuid(UUID uuid) {
-        List<House> houses = entityManager.createQuery("SELECT h FROM House h JOIN h.owners o WHERE o.uuid = :ownerUuid", House.class)
+        List<House> houses = entityManager
+                .createQuery("SELECT h FROM House h JOIN h.owners o WHERE o.uuid = :ownerUuid", House.class)
                 .setParameter("ownerUuid", uuid)
                 .getResultList();
         if (houses.isEmpty()) {

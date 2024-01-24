@@ -5,10 +5,14 @@ spring:
     username: postgres
     password: postgres
   jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
     hibernate:
       hbm2ddl:
         auto: none
-#        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
+      #        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
       dialect: org.hibernate.dialect.PostgreSQLDialect
 flyway:
   enabled: true

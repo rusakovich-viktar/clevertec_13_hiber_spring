@@ -34,7 +34,8 @@ public class PersonDaoImpl implements PersonDao {
     @Override
     public Person getPersonByUuid(UUID uuid) {
         try {
-            return entityManager.createQuery("SELECT p FROM Person p WHERE p.uuid = :uuid", Person.class)
+            return entityManager
+                    .createQuery("SELECT p FROM Person p WHERE p.uuid = :uuid", Person.class)
                     .setParameter("uuid", uuid)
                     .getSingleResult();
         } catch (NoResultException e) {
@@ -51,7 +52,8 @@ public class PersonDaoImpl implements PersonDao {
      */
     @Override
     public List<Person> getAllPersons(int pageNumber, int pageSize) {
-        return entityManager.createQuery("SELECT p FROM Person p", Person.class)
+        return entityManager
+                .createQuery("SELECT p FROM Person p", Person.class)
                 .setFirstResult((pageNumber - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -84,7 +86,8 @@ public class PersonDaoImpl implements PersonDao {
      */
     @Override
     public void deletePerson(UUID uuid) {
-        entityManager.createQuery("DELETE FROM Person p WHERE p.uuid = :uuid")
+        entityManager
+                .createQuery("DELETE FROM Person p WHERE p.uuid = :uuid")
                 .setParameter("uuid", uuid)
                 .executeUpdate();
     }

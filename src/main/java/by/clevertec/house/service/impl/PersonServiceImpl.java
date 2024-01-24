@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Обрабатывает бизнес-логику, связанную с персонами.
  */
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
@@ -48,6 +47,7 @@ public class PersonServiceImpl implements PersonService {
      * @param uuid UUID персоны.
      * @return DTO персоны.
      */
+    @Transactional(readOnly = true)
     @Override
     public PersonResponseDto getPersonByUuid(UUID uuid) {
         return personMapper.toDto(personDao.getPersonByUuid(uuid));
@@ -60,6 +60,7 @@ public class PersonServiceImpl implements PersonService {
      * @param pageSize   размер страницы.
      * @return Список DTO персон.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<PersonResponseDto> getAllPersons(int pageNumber, int pageSize) {
         return personDao.getAllPersons(pageNumber, pageSize).stream()
@@ -72,6 +73,7 @@ public class PersonServiceImpl implements PersonService {
      *
      * @param personDto DTO персоны.
      */
+    @Transactional
     @Override
     public void savePerson(PersonRequestDto personDto) {
         Person mappedPerson = personMapper.toEntity(personDto);
@@ -98,6 +100,7 @@ public class PersonServiceImpl implements PersonService {
      * @param uuid      UUID персоны.
      * @param personDto DTO персоны с новой информацией.
      */
+    @Transactional
     @Override
     public void updatePerson(UUID uuid, @Valid PersonRequestDto personDto) {
         Person existingPerson = personDao.getPersonByUuid(uuid);
@@ -114,6 +117,7 @@ public class PersonServiceImpl implements PersonService {
      *
      * @param uuid UUID персоны.
      */
+    @Transactional
     @Override
     public void deletePerson(UUID uuid) {
         Person person = personDao.getPersonByUuid(uuid);
@@ -133,6 +137,7 @@ public class PersonServiceImpl implements PersonService {
      * @param uuid    UUID персоны.
      * @param updates Map с обновлениями полей.
      */
+    @Transactional
     @Override
     public void updatePersonFields(UUID uuid, Map<String, Object> updates) {
         Person existingPerson = personDao.getPersonByUuid(uuid);
@@ -163,6 +168,7 @@ public class PersonServiceImpl implements PersonService {
      * @param personUuid UUID персоны.
      * @return Список DTO домов.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<HouseResponseDto> getOwnedHouses(UUID personUuid) {
         Optional.ofNullable(personUuid).orElseThrow(() -> new IllegalArgumentException("UUID cannot be null"));

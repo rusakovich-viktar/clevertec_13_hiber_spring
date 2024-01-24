@@ -1,5 +1,11 @@
 package by.clevertec.house.service.impl;
 
+import static by.clevertec.house.util.Constant.Attributes.AREA;
+import static by.clevertec.house.util.Constant.Attributes.CITY;
+import static by.clevertec.house.util.Constant.Attributes.COUNTRY;
+import static by.clevertec.house.util.Constant.Attributes.NUMBER;
+import static by.clevertec.house.util.Constant.Attributes.STREET;
+
 import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
@@ -32,11 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class HouseServiceImpl implements HouseService {
 
-    public static final String AREA = "area";
-    public static final String COUNTRY = "country";
-    public static final String CITY = "city";
-    public static final String STREET = "street";
-    public static final String NUMBER = "number";
     private final HouseDao houseDao;
     private final HouseMapper houseMapper;
     private final PersonMapper personMapper;
@@ -48,6 +49,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid UUID дома.
      * @return DTO дома.
      */
+    @Transactional(readOnly = true)
     @Override
     public HouseResponseDto getHouseByUuid(UUID uuid) {
         return houseMapper.toDto(houseDao.getHouseByUuid(uuid));
@@ -60,6 +62,7 @@ public class HouseServiceImpl implements HouseService {
      * @param pageSize   размер страницы.
      * @return Список DTO домов.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize) {
         return houseDao.getAllHouses(pageNumber, pageSize).stream()
@@ -72,13 +75,11 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param houseDto DTO дома.
      */
+    @Transactional
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
         House house = houseMapper.toEntity(houseDto);
         house.setCreateDate(LocalDateTime.now());
-        if (house.getUuid() == null) {
-            house.setUuid(UUID.randomUUID());
-        }
         houseDao.saveHouse(house);
     }
 
@@ -88,6 +89,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid     UUID дома.
      * @param houseDto DTO дома с новой информацией.
      */
+    @Transactional
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
@@ -111,6 +113,7 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param uuid UUID дома.
      */
+    @Transactional
     @Override
     public void deleteHouse(UUID uuid) {
         houseDao.deleteHouse(uuid);
@@ -122,6 +125,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid    UUID дома.
      * @param updates Map с обновлениями полей.
      */
+    @Transactional
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
         House existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
@@ -146,6 +150,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid UUID дома.
      * @return Список DTO персон.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<PersonResponseDto> getResidents(UUID uuid) {
         House house = houseDao.getHouseByUuid(uuid);

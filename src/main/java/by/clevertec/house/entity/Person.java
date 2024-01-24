@@ -5,6 +5,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,9 +19,11 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * PersonEntity.
@@ -29,6 +32,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "uuid"})
+@ToString
 @Entity
 @Table(name = "persons", uniqueConstraints = @UniqueConstraint(columnNames = {"passport_series", "passport_number"}))
 public class Person {
@@ -63,7 +68,7 @@ public class Person {
     @JoinColumn(name = "house_id", nullable = false)
     private House house;
 
-    @ManyToMany(mappedBy = "owners")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "owners")
     private List<House> ownedHouses;
 
     @PrePersist

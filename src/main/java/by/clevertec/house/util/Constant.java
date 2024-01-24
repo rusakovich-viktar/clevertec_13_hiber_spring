@@ -14,4 +14,15 @@ public class Constant {
         public static final String INTERNAL_SERVER_ERROR = "Internal server error";
 
     }
+
+    @UtilityClass
+    public class Attributes {
+
+        public static final String AREA = "area";
+        public static final String COUNTRY = "country";
+        public static final String CITY = "city";
+        public static final String STREET = "street";
+        public static final String NUMBER = "number";
+    }
+
 }
