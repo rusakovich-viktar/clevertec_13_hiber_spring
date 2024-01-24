@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/house
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      hbm2ddl:
+        auto: none
+#        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+flyway:
+  enabled: true
