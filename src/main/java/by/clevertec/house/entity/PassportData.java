@@ -15,8 +15,10 @@ import lombok.Setter;
 @Setter
 @Embeddable
 public class PassportData {
+
     @Column(name = "passport_series", nullable = false)
     private String passportSeries;
+
     @Column(name = "passport_number", nullable = false)
     private String passportNumber;
 }

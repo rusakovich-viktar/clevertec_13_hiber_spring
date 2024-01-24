@@ -1,10 +1,16 @@
 package by.clevertec.house.service.impl;
 
+import static by.clevertec.house.util.Constant.Attributes.AREA;
+import static by.clevertec.house.util.Constant.Attributes.CITY;
+import static by.clevertec.house.util.Constant.Attributes.COUNTRY;
+import static by.clevertec.house.util.Constant.Attributes.NUMBER;
+import static by.clevertec.house.util.Constant.Attributes.STREET;
+
 import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
-import by.clevertec.house.entity.HouseEntity;
+import by.clevertec.house.entity.House;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
@@ -31,11 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class HouseServiceImpl implements HouseService {
-    public static final String AREA = "area";
-    public static final String COUNTRY = "country";
-    public static final String CITY = "city";
-    public static final String STREET = "street";
-    public static final String NUMBER = "number";
+
     private final HouseDao houseDao;
     private final HouseMapper houseMapper;
     private final PersonMapper personMapper;
@@ -47,6 +49,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid UUID дома.
      * @return DTO дома.
      */
+    @Transactional(readOnly = true)
     @Override
     public HouseResponseDto getHouseByUuid(UUID uuid) {
         return houseMapper.toDto(houseDao.getHouseByUuid(uuid));
@@ -59,6 +62,7 @@ public class HouseServiceImpl implements HouseService {
      * @param pageSize   размер страницы.
      * @return Список DTO домов.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize) {
         return houseDao.getAllHouses(pageNumber, pageSize).stream()
@@ -71,14 +75,12 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param houseDto DTO дома.
      */
+    @Transactional
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
-        HouseEntity houseEntity = houseMapper.toEntity(houseDto);
-        houseEntity.setCreateDate(LocalDateTime.now());
-        if (houseEntity.getUuid() == null) {
-            houseEntity.setUuid(UUID.randomUUID());
-        }
-        houseDao.saveHouse(houseEntity);
+        House house = houseMapper.toEntity(houseDto);
+        house.setCreateDate(LocalDateTime.now());
+        houseDao.saveHouse(house);
     }
 
     /**
@@ -87,6 +89,7 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid     UUID дома.
      * @param houseDto DTO дома с новой информацией.
      */
+    @Transactional
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
@@ -94,15 +97,15 @@ public class HouseServiceImpl implements HouseService {
             throw new ConstraintViolationException(violations);
         }
 
-        HouseEntity houseEntity = houseDao.getHouseByUuid(uuid);
+        House house = houseDao.getHouseByUuid(uuid);
 
-        houseEntity.setArea(houseDto.getArea());
-        houseEntity.setCountry(houseDto.getCountry());
-        houseEntity.setCity(houseDto.getCity());
-        houseEntity.setStreet(houseDto.getStreet());
-        houseEntity.setNumber(houseDto.getNumber());
+        house.setArea(houseDto.getArea());
+        house.setCountry(houseDto.getCountry());
+        house.setCity(houseDto.getCity());
+        house.setStreet(houseDto.getStreet());
+        house.setNumber(houseDto.getNumber());
 
-        houseDao.updateHouse(houseEntity);
+        houseDao.updateHouse(house);
     }
 
     /**
@@ -110,6 +113,7 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param uuid UUID дома.
      */
+    @Transactional
     @Override
     public void deleteHouse(UUID uuid) {
         houseDao.deleteHouse(uuid);
@@ -121,10 +125,11 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid    UUID дома.
      * @param updates Map с обновлениями полей.
      */
+    @Transactional
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
-        HouseEntity existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
-                .orElseThrow(() -> EntityNotFoundException.of(HouseEntity.class, uuid));
+        House existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             if (entry.getValue() != null) {
                 switch (entry.getKey()) {
@@ -145,9 +150,10 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid UUID дома.
      * @return Список DTO персон.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<PersonResponseDto> getResidents(UUID uuid) {
-        HouseEntity house = houseDao.getHouseByUuid(uuid);
+        House house = houseDao.getHouseByUuid(uuid);
         return house.getResidents().stream()
                 .map(personMapper::toDto)
                 .distinct()

@@ -1,7 +1,7 @@
 package by.clevertec.house.dao.impl;
 
 import by.clevertec.house.dao.PersonDao;
-import by.clevertec.house.entity.PersonEntity;
+import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @RequiredArgsConstructor
 public class PersonDaoImpl implements PersonDao {
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -31,13 +32,14 @@ public class PersonDaoImpl implements PersonDao {
      * @throws EntityNotFoundException если PersonEntity не найден.
      */
     @Override
-    public PersonEntity getPersonByUuid(UUID uuid) {
+    public Person getPersonByUuid(UUID uuid) {
         try {
-            return entityManager.createQuery("SELECT p FROM PersonEntity p WHERE p.uuid = :uuid", PersonEntity.class)
+            return entityManager
+                    .createQuery("SELECT p FROM Person p WHERE p.uuid = :uuid", Person.class)
                     .setParameter("uuid", uuid)
                     .getSingleResult();
         } catch (NoResultException e) {
-            throw EntityNotFoundException.of(PersonEntity.class, uuid);
+            throw EntityNotFoundException.of(Person.class, uuid);
         }
     }
 
@@ -49,8 +51,9 @@ public class PersonDaoImpl implements PersonDao {
      * @return Список PersonEntity.
      */
     @Override
-    public List<PersonEntity> getAllPersons(int pageNumber, int pageSize) {
-        return entityManager.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class)
+    public List<Person> getAllPersons(int pageNumber, int pageSize) {
+        return entityManager
+                .createQuery("SELECT p FROM Person p", Person.class)
                 .setFirstResult((pageNumber - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -62,7 +65,7 @@ public class PersonDaoImpl implements PersonDao {
      * @param person PersonEntity.
      */
     @Override
-    public void savePerson(PersonEntity person) {
+    public void savePerson(Person person) {
         entityManager.persist(person);
     }
 
@@ -72,7 +75,7 @@ public class PersonDaoImpl implements PersonDao {
      * @param person PersonEntity.
      */
     @Override
-    public void updatePerson(PersonEntity person) {
+    public void updatePerson(Person person) {
         entityManager.merge(person);
     }
 
@@ -83,7 +86,8 @@ public class PersonDaoImpl implements PersonDao {
      */
     @Override
     public void deletePerson(UUID uuid) {
-        entityManager.createQuery("DELETE FROM PersonEntity p WHERE p.uuid = :uuid")
+        entityManager
+                .createQuery("DELETE FROM Person p WHERE p.uuid = :uuid")
                 .setParameter("uuid", uuid)
                 .executeUpdate();
     }

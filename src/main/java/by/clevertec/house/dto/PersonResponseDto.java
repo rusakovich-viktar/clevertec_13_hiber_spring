@@ -19,7 +19,7 @@ public class PersonResponseDto {
     private String surname;
     private Sex sex;
     private PassportData passportData;
-    private String createDateIso;
-    private String updateDateIso;
+    private String createDate;
+    private String updateDate;
 
 }

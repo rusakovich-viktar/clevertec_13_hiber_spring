@@ -10,6 +10,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  */
 @Configuration
 public class ValidationConfig {
+
     /**
      * Создает и возвращает экземпляр MethodValidationPostProcessor.
      *

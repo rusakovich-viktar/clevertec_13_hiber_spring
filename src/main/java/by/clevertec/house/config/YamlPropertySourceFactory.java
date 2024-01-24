@@ -13,6 +13,7 @@ import org.springframework.core.io.support.PropertySourceFactory;
  * Используется для чтения свойств из файла application.yml.
  */
 public class YamlPropertySourceFactory implements PropertySourceFactory {
+
     /**
      * Создает и возвращает источник свойств на основе указанного ресурса.
      *

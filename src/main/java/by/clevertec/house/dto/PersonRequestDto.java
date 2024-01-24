@@ -2,6 +2,7 @@ package by.clevertec.house.dto;
 
 import by.clevertec.house.entity.Sex;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,16 +18,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PersonRequestDto {
-    private UUID uuid;
-    @NotNull(message = "Поле 'name' не может быть null")
+
+    private UUID uuid = UUID.randomUUID();
+
+    @NotEmpty(message = "Поле 'name' не может быть пустым")
     private String name;
-    @NotNull(message = "Поле 'surname' не может быть null")
+
+    @NotEmpty(message = "Поле 'surname' не может быть пустым")
     private String surname;
+
     @NotNull(message = "Поле 'sex' не может быть null")
     private Sex sex;
+
     @Valid
     @NotNull(message = "Поле 'passportData' не может быть null")
     private PassportDataDto passportData;
+
     private UUID houseUuid;
     private List<UUID> ownedHouseUuids;
 
@@ -35,6 +42,7 @@ public class PersonRequestDto {
      */
     @Data
     public static class PassportDataDto {
+
         @Size(min = 2, max = 2, message = "Длина серии паспорта должна быть ровно 2 символа")
         @Pattern(regexp = "[A-Z]{2}")
         private String passportSeries;
