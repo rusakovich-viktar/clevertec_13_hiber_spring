@@ -2,7 +2,6 @@ package by.clevertec.house.service.impl;
 
 import static java.util.stream.Collectors.toList;
 
-import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
@@ -41,9 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
-
-    private final HouseDao houseDao;
-    //TODO
     private final HouseRepository houseRepository;
     private final PersonMapper personMapper;
     private final HouseMapper houseMapper;
@@ -94,15 +90,16 @@ public class PersonServiceImpl implements PersonService {
         House houseEntity = returnHouseResidentIfExist(personDto);
         mappedPerson.setHouse(houseEntity);
 
-        List<House> listHouseOwners = getListHouseOwnersIfExist(personDto);
-        mappedPerson.setOwnedHouses(listHouseOwners);
+        Person savedPerson = personRepository.save(mappedPerson);
 
+        List<House> listHouseOwners = getListHouseOwnersIfExist(personDto);
         for (House house : listHouseOwners) {
-            house.getOwners().add(mappedPerson);
-            houseDao.saveHouse(house);
+            house.getOwners().add(savedPerson);
+            houseRepository.save(house);
         }
 
-        personRepository.save(mappedPerson);
+        savedPerson.setOwnedHouses(listHouseOwners);
+        personRepository.save(savedPerson);
     }
 
     /**
@@ -184,7 +181,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<HouseResponseDto> getOwnedHouses(UUID personUuid) {
         Optional.ofNullable(personUuid).orElseThrow(() -> new IllegalArgumentException("UUID cannot be null"));
-        List<House> houses = houseDao.getHousesByOwnerUuid(personUuid);
+        List<House> houses = houseRepository.getHousesByOwnersUuid(personUuid);
         return houses.isEmpty() ? Collections.emptyList() : houses.stream().map(houseMapper::toDto).collect(toList());
     }
 
@@ -234,7 +231,7 @@ public class PersonServiceImpl implements PersonService {
 
                 for (House house : listHouseOwners) {
                     house.getOwners().add(person);
-                    houseDao.saveHouse(house);
+                    houseRepository.save(house);
                 }
             }
         }
