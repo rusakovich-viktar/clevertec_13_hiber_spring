@@ -3,7 +3,6 @@ package by.clevertec.house.service.impl;
 import static java.util.stream.Collectors.toList;
 
 import by.clevertec.house.dao.HouseDao;
-import by.clevertec.house.dao.PersonDao;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
@@ -15,6 +14,8 @@ import by.clevertec.house.entity.Sex;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
+import by.clevertec.house.repository.HouseRepository;
+import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
@@ -24,7 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
-    private final PersonDao personDao;
+    private final PersonRepository personRepository;
+
     private final HouseDao houseDao;
+    //TODO
+    private final HouseRepository houseRepository;
     private final PersonMapper personMapper;
     private final HouseMapper houseMapper;
 
@@ -50,7 +57,10 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(readOnly = true)
     @Override
     public PersonResponseDto getPersonByUuid(UUID uuid) {
-        return personMapper.toDto(personDao.getPersonByUuid(uuid));
+        Person person = personRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(Person.class, uuid));
+        return personMapper.toDto(person);
     }
 
     /**
@@ -63,9 +73,10 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(readOnly = true)
     @Override
     public List<PersonResponseDto> getAllPersons(int pageNumber, int pageSize) {
-        return personDao.getAllPersons(pageNumber, pageSize).stream()
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return personRepository.findAll(pageable).stream()
                 .map(personMapper::toDto)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -91,7 +102,7 @@ public class PersonServiceImpl implements PersonService {
             houseDao.saveHouse(house);
         }
 
-        personDao.savePerson(mappedPerson);
+        personRepository.save(mappedPerson);
     }
 
     /**
@@ -103,13 +114,15 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     @Override
     public void updatePerson(UUID uuid, @Valid PersonRequestDto personDto) {
-        Person existingPerson = personDao.getPersonByUuid(uuid);
+        Person existingPerson = personRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(Person.class, uuid));
 
         updatePersonDetails(existingPerson, personDto);
         updateHouse(existingPerson, personDto);
         updateOwnedHouses(existingPerson, personDto);
 
-        personDao.updatePerson(existingPerson);
+        personRepository.save(existingPerson);
     }
 
     /**
@@ -120,15 +133,14 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     @Override
     public void deletePerson(UUID uuid) {
-        Person person = personDao.getPersonByUuid(uuid);
-        if (person == null) {
-            throw EntityNotFoundException.of(Person.class, uuid);
-        }
+        Person person = personRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(Person.class, uuid));
 
         person.getOwnedHouses().forEach(house -> house.getOwners().remove(person));
         person.getOwnedHouses().clear();
 
-        personDao.deletePerson(uuid);
+        personRepository.deleteByUuid(uuid);
     }
 
     /**
@@ -140,7 +152,7 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     @Override
     public void updatePersonFields(UUID uuid, Map<String, Object> updates) {
-        Person existingPerson = personDao.getPersonByUuid(uuid);
+        Person existingPerson = personRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(Person.class, uuid));
         ObjectMapper mapper = new ObjectMapper();
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             Optional.ofNullable(entry.getValue()).ifPresent(value -> {
@@ -153,13 +165,13 @@ public class PersonServiceImpl implements PersonService {
                     case "houseUuid" -> {
                         UUID houseUuid = UUID.fromString((String) value);
                         if (!houseUuid.equals(existingPerson.getHouse().getUuid())) {
-                            existingPerson.setHouse(houseDao.getHouseByUuid(houseUuid));
+                            existingPerson.setHouse(houseRepository.findByUuid(houseUuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid)));
                         }
                     }
                 }
             });
         }
-        personDao.updatePerson(existingPerson);
+        personRepository.save(existingPerson);
     }
 
     /**
@@ -253,13 +265,7 @@ public class PersonServiceImpl implements PersonService {
             return new ArrayList<>();
         }
         return ownedHouseUuids.stream()
-                .map(uuid -> {
-                    House house = houseDao.getHouseByUuid(uuid);
-                    if (house == null) {
-                        throw EntityNotFoundException.of(House.class, uuid);
-                    }
-                    return house;
-                })
+                .map(uuid -> houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid)))
                 .distinct()
                 .collect(toList());
     }
@@ -277,10 +283,8 @@ public class PersonServiceImpl implements PersonService {
         if (houseUuid == null) {
             throw new IllegalArgumentException("UUID обязателен");
         }
-        House houseResident = houseDao.getHouseByUuid(houseUuid);
-        if (houseResident == null) {
-            throw EntityNotFoundException.of(House.class, houseUuid);
-        }
-        return houseResident;
+        return houseRepository
+                .findByUuid(houseUuid)
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, houseUuid));
     }
 }

@@ -6,7 +6,6 @@ import by.clevertec.house.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,16 +30,16 @@ public class HouseDaoImpl implements HouseDao {
      * @return HouseEntity.
      * @throws EntityNotFoundException если дом не найден.
      */
-    @Override
-    public House getHouseByUuid(UUID uuid) {
-        Optional<House> house = Optional.ofNullable(entityManager
-                .createQuery("SELECT h FROM House h WHERE h.uuid = :uuid", House.class)
-                .setParameter("uuid", uuid)
-                .getResultStream()
-                .findFirst()
-                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid)));
-        return house.get();
-    }
+//    @Override
+//    public House getHouseByUuid(UUID uuid) {
+//        Optional<House> house = Optional.ofNullable(entityManager
+//                .createQuery("SELECT h FROM House h WHERE h.uuid = :uuid", House.class)
+//                .setParameter("uuid", uuid)
+//                .getResultStream()
+//                .findFirst()
+//                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid)));
+//        return house.get();
+//    }
 
     /**
      * Получает все HouseEntity из базы данных с пагинацией.
@@ -49,14 +48,14 @@ public class HouseDaoImpl implements HouseDao {
      * @param pageSize   размер страницы.
      * @return Список HouseEntity.
      */
-    @Override
-    public List<House> getAllHouses(int pageNumber, int pageSize) {
-        return entityManager
-                .createQuery("SELECT h FROM House h", House.class)
-                .setFirstResult((pageNumber - 1) * pageSize)
-                .setMaxResults(pageSize)
-                .getResultList();
-    }
+//    @Override
+//    public List<House> getAllHouses(int pageNumber, int pageSize) {
+//        return entityManager
+//                .createQuery("SELECT h FROM House h", House.class)
+//                .setFirstResult((pageNumber - 1) * pageSize)
+//                .setMaxResults(pageSize)
+//                .getResultList();
+//    }
 
     /**
      * Сохраняет HouseEntity в базе данных.

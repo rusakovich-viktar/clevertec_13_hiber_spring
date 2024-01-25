@@ -6,9 +6,9 @@ import java.util.UUID;
 
 public interface HouseDao {
 
-    House getHouseByUuid(UUID uuid);
+//    House getHouseByUuid(UUID uuid);
 
-    List<House> getAllHouses(int pageNumber, int pageSize);
+//    List<House> getAllHouses(int pageNumber, int pageSize);
 
     void saveHouse(House house);
 
