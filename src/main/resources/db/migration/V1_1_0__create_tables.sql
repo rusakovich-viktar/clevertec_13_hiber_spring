@@ -13,8 +13,8 @@ create table if not exists houses
             unique
 );
 
--- alter table houses
---     owner to postgres;
+alter table houses
+    owner to postgres;
 
 create table if not exists persons
 (
@@ -35,8 +35,8 @@ create table if not exists persons
         unique (passport_series, passport_number)
 );
 
--- alter table persons
---     owner to postgres;
+alter table persons
+    owner to postgres;
 
 create table if not exists house_owner
 (
@@ -49,5 +49,5 @@ create table if not exists house_owner
     primary key (house_id, owner_id)
 );
 
--- alter table house_owner
---     owner to postgres;
+alter table house_owner
+    owner to postgres;

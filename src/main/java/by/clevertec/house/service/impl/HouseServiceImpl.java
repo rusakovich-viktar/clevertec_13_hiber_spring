@@ -104,7 +104,9 @@ public class HouseServiceImpl implements HouseService {
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
-        House house = houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
+        House house = houseRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
 
         house.setArea(houseDto.getArea());
         house.setCountry(houseDto.getCountry());
