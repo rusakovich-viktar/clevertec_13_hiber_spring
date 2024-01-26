@@ -9,7 +9,7 @@ create table if not exists houses
     number      varchar(255)     not null,
     street      varchar(255)     not null,
     uuid        uuid             not null
-        constraint  uuid_house_unique
+        constraint uuid_house_unique
             unique
 );
 
@@ -21,10 +21,10 @@ create table if not exists persons
     id              bigserial
         primary key,
     create_date     timestamp(6) not null,
-    name            varchar(25) not null,
-    passport_number varchar(7) not null,
-    passport_series varchar(2) not null,
-    sex             varchar(6) not null,
+    name            varchar(25)  not null,
+    passport_number varchar(7)   not null,
+    passport_series varchar(2)   not null,
+    sex             varchar(6)   not null,
     surname         varchar(255) not null,
     update_date     timestamp(6) not null,
     uuid            uuid         not null,

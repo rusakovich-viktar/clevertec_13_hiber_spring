@@ -15,6 +15,7 @@ import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
+import by.clevertec.house.proxy.annotation.Cacheable;
 import by.clevertec.house.repository.HouseRepository;
 import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.service.HouseService;
@@ -56,6 +57,7 @@ public class HouseServiceImpl implements HouseService {
      */
 
     @Transactional(readOnly = true)
+    @Cacheable
     @Override
     public HouseResponseDto getHouseByUuid(UUID uuid) {
         House house = houseRepository
@@ -88,6 +90,7 @@ public class HouseServiceImpl implements HouseService {
      */
 
     @Transactional
+    @Cacheable
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
         House house = houseMapper.toEntity(houseDto);
@@ -103,6 +106,7 @@ public class HouseServiceImpl implements HouseService {
      */
 
     @Transactional
+    @Cacheable
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
@@ -125,6 +129,7 @@ public class HouseServiceImpl implements HouseService {
      */
 
     @Transactional
+    @Cacheable
     @Override
     public void deleteHouse(UUID uuid) {
         houseRepository.deleteByUuid(uuid);

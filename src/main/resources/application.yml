@@ -25,4 +25,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+cache:
+  algorithm: LRU
+  capacity: 50
 
