@@ -1,6 +1,7 @@
 package by.clevertec.house.controller;
 
 import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.service.PersonService;
@@ -117,22 +118,28 @@ public class PersonController {
      * @param uuid UUID персоны.
      * @return ResponseEntity со списком домов, принадлежащих персоне.
      */
-    @GetMapping("/{uuid}/ownedHouses")
+    @GetMapping("/{uuid}/owned-houses")
     public ResponseEntity<List<HouseResponseDto>> getOwnedHouses(@PathVariable UUID uuid) {
         List<HouseResponseDto> ownedHouses = personService.getOwnedHousesByPersonUuid(uuid);
         return ResponseEntity.ok(ownedHouses);
 
     }
 
-    @GetMapping("/{uuid}/residences/history")
-    public ResponseEntity<List<HouseResponseDto>> getPastResidences(@PathVariable UUID uuid) {
-        List<HouseResponseDto> residences = personService.getPastTenants(uuid);
-        return ResponseEntity.ok(residences);
+    /**
+     * Получает список домов, ранее принадлежащих персоне по его UUID.
+     */
+    @GetMapping("/{uuid}/tenanted-houses/history")
+    public ResponseEntity<List<HouseWithHistoryDto>> getPastResidences(@PathVariable UUID uuid) {
+        List<HouseWithHistoryDto> pastTenants = personService.getPastTenantsByUuid(uuid);
+        return ResponseEntity.ok(pastTenants);
     }
 
-    @GetMapping("/{uuid}/ownedHouses/history")
-    public ResponseEntity<List<HouseResponseDto>> getPastOwnedHouses(@PathVariable UUID uuid) {
-        List<HouseResponseDto> ownedHouses = personService.getPastOwnedHouses(uuid);
+    /**
+     * Получает список домов, которе ранее принадлежали персоне по его UUID.
+     */
+    @GetMapping("/{uuid}/owned-houses/history")
+    public ResponseEntity<List<HouseWithHistoryDto>> getPastOwnedHouses(@PathVariable UUID uuid) {
+        List<HouseWithHistoryDto> ownedHouses = personService.getPastOwnedHousesByUuid(uuid);
         return ResponseEntity.ok(ownedHouses);
     }
 }

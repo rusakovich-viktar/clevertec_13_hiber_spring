@@ -3,8 +3,8 @@ package by.clevertec.house.service.impl;
 import static java.util.stream.Collectors.toList;
 
 import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.dto.PersonRequestDto;
-import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.PassportData;
@@ -18,6 +18,7 @@ import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -115,7 +116,7 @@ public class PersonServiceImpl implements PersonService {
                 .findByUuid(uuid)
                 .orElseThrow(() -> EntityNotFoundException.of(Person.class, uuid));
 
-        updatePersonDetails(existingPerson, personDto);
+        personMapper.updatePersonDetailsFromDto(existingPerson, personDto);
         updateHouse(existingPerson, personDto);
         updateOwnedHouses(existingPerson, personDto);
 
@@ -187,33 +188,28 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<HouseResponseDto> getPastTenants(UUID uuid) {
-        List<House> getPastTenants = houseRepository.getPastTenantsByUuid(uuid);
-        return getPastTenants.stream()
-                .map(houseMapper::toDto)
+    public List<HouseWithHistoryDto> getPastTenantsByUuid(UUID personUuid) {
+        List<Object[]> pastTenants = houseRepository.getPastTenantsByUuid(personUuid);
+        return pastTenants.stream()
+                .map(obj -> {
+                    House house = (House) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return houseMapper.toHouseWithHistoryDto(house, date);
+                })
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<HouseResponseDto> getPastOwnedHouses(UUID uuid) {
-        List<House> pastOwnedHouses = houseRepository.findPastOwnedHousesByUuid(uuid);
+    public List<HouseWithHistoryDto> getPastOwnedHousesByUuid(UUID personUuid) {
+        List<Object[]> pastOwnedHouses = houseRepository.findPastOwnedHousesByUuid(personUuid);
         return pastOwnedHouses.stream()
-                .map(houseMapper::toDto)
+                .map(obj -> {
+                    House house = (House) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return houseMapper.toHouseWithHistoryDto(house, date);
+                })
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Обновляет детали персоны на основе DTO.
-     *
-     * @param person Сущность персоны для обновления.
-     * @param dto    DTO с новыми данными персоны.
-     */
-    private void updatePersonDetails(Person person, PersonRequestDto dto) {
-        person.setName(dto.getName());
-        person.setSurname(dto.getSurname());
-        person.setSex(dto.getSex());
-        person.setPassportData(convertToPassportData(dto.getPassportData()));
     }
 
     /**
@@ -261,19 +257,6 @@ public class PersonServiceImpl implements PersonService {
                 }
             }
         }
-    }
-
-    /**
-     * Конвертирует DTO данных паспорта в сущность данных паспорта.
-     *
-     * @param dto DTO данных паспорта.
-     * @return Сущность данных паспорта.
-     */
-    private PassportData convertToPassportData(PassportDataDto dto) {
-        PassportData data = new PassportData();
-        data.setPassportSeries(dto.getPassportSeries());
-        data.setPassportNumber(dto.getPassportNumber());
-        return data;
     }
 
     /**

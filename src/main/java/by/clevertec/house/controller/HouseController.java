@@ -3,6 +3,7 @@ package by.clevertec.house.controller;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
+import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.service.HouseService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -123,15 +124,21 @@ public class HouseController {
         return ResponseEntity.ok(tenants);
     }
 
+    /**
+     * Получает список прошлых жителей дома по UUID дома.
+     */
     @GetMapping("/{uuid}/tenants/history")
-    public ResponseEntity<List<PersonResponseDto>> getPastTenants(@PathVariable UUID uuid) {
-        List<PersonResponseDto> tenants = houseService.getPastTenantsByHouseUuid(uuid);
-        return ResponseEntity.ok(tenants);
+    public ResponseEntity<List<PersonWithHistoryDto>> getPastTenants(@PathVariable UUID uuid) {
+        List<PersonWithHistoryDto> pastTenantsByHouseUuid = houseService.getPastTenantsByHouseUuid(uuid);
+        return ResponseEntity.ok(pastTenantsByHouseUuid);
     }
 
+    /**
+     * Получает список прошлых хозяев дома по UUID дома.
+     */
     @GetMapping("/{uuid}/owners/history")
-    public ResponseEntity<List<PersonResponseDto>> getPastOwners(@PathVariable UUID uuid) {
-        List<PersonResponseDto> owners = houseService.getPastOwnersByHouseUuid(uuid);
+    public ResponseEntity<List<PersonWithHistoryDto>> getPastOwners(@PathVariable UUID uuid) {
+        List<PersonWithHistoryDto> owners = houseService.getPastOwnersByHouseUuid(uuid);
         return ResponseEntity.ok(owners);
     }
 

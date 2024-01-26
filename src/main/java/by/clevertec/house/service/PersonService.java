@@ -1,6 +1,7 @@
 package by.clevertec.house.service;
 
 import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import java.util.List;
@@ -23,9 +24,9 @@ public interface PersonService {
 
     List<HouseResponseDto> getOwnedHousesByPersonUuid(UUID uuid);
 
-    List<HouseResponseDto> getPastTenants(UUID uuid);
+    List<HouseWithHistoryDto> getPastTenantsByUuid(UUID personUuid);
 
-    List<HouseResponseDto> getPastOwnedHouses(UUID uuid);
+    List<HouseWithHistoryDto> getPastOwnedHousesByUuid(UUID uuid);
 
 }
 

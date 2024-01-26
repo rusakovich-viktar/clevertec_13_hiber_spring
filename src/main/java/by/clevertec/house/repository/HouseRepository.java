@@ -15,16 +15,16 @@ public interface HouseRepository extends JpaRepository<House, UUID> {
 
     List<House> getHousesByOwnersUuid(UUID uuid);
 
-    @Query("SELECT h FROM House h "
+    @Query("SELECT h, hh.date FROM House h "
             + "JOIN FETCH HouseHistory hh ON h = hh.house "
             + "JOIN FETCH Person p ON hh.person = p "
             + "WHERE p.uuid = :personUuid AND hh.type = 'TENANT'")
-    List<House> getPastTenantsByUuid(UUID personUuid);
+    List<Object[]> getPastTenantsByUuid(UUID personUuid);
 
-    @Query("SELECT h FROM House h "
+    @Query("SELECT h, hh.date FROM House h "
             + "JOIN FETCH HouseHistory hh ON h = hh.house "
             + "JOIN FETCH Person p ON hh.person = p "
             + "WHERE p.uuid = :personUuid AND hh.type = 'OWNER'")
-    List<House> findPastOwnedHousesByUuid(UUID personUuid);
+    List<Object[]> findPastOwnedHousesByUuid(UUID personUuid);
 
 }

@@ -9,6 +9,7 @@ import static by.clevertec.house.util.Constant.Attributes.STREET;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
+import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
@@ -112,11 +113,7 @@ public class HouseServiceImpl implements HouseService {
                 .findByUuid(uuid)
                 .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
 
-        house.setArea(houseDto.getArea());
-        house.setCountry(houseDto.getCountry());
-        house.setCity(houseDto.getCity());
-        house.setStreet(houseDto.getStreet());
-        house.setNumber(houseDto.getNumber());
+        houseMapper.updateHouseFromDto(houseDto, house);
 
         houseRepository.save(house);
     }
@@ -176,19 +173,27 @@ public class HouseServiceImpl implements HouseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> getPastTenantsByHouseUuid(UUID uuid) {
-        List<Person> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
+    public List<PersonWithHistoryDto> getPastTenantsByHouseUuid(UUID uuid) {
+        List<Object[]> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
         return pastTenants.stream()
-                .map(personMapper::toDto)
+                .map(obj -> {
+                    Person person = (Person) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return personMapper.toPersonWithHistoryDto(person, date);
+                })
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> getPastOwnersByHouseUuid(UUID uuid) {
-        List<Person> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
+    public List<PersonWithHistoryDto> getPastOwnersByHouseUuid(UUID uuid) {
+        List<Object[]> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
         return pastOwners.stream()
-                .map(personMapper::toDto)
+                .map(obj -> {
+                    Person person = (Person) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return personMapper.toPersonWithHistoryDto(person, date);
+                })
                 .collect(Collectors.toList());
     }
 
