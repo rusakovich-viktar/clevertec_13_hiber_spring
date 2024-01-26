@@ -2,32 +2,21 @@
 
 # :satellite: О проекте  
 Web приложение учёта домов и жильцов
-Реализованы все задачи из задания, кроме полнотекстового поиска.
+Подключен SpringBoot
+Подключен DataJPA
+Реализован базовый функционал
 ## :gear: Как запустить проект:
 
 ```bash
 
 0. Склонировать репозиторий себе на компьютер
 
-1.Запускаем контейнер сервлетов Tomcat.
+1.Запускаем DemoApplication через SpringBoot
 
-2.Скрипты запускаются автоматически через flywayMigration. Переключатель для включения-выключения Flyway в application.yml
-flyway:
-  enabled: true
+2.Скрипты запускаются автоматически через flywayMigration. 
 
-Также инициализировать базу можно через JPA переключив перекоючатель из положения none в create   
-jpa:
-    hibernate:
-      hbm2ddl:
-        auto: none  
-
-3.Скрипты для ручного запуска находятся в resources/db/migration
-4. Для упрощения тестирования в resources/HousesProject.postman-collection.json лежит файл экспорта из POSTMAN
 ```
-
-![postman](src/main/resources/static/image/img.png)
-
-![db](src/main/resources/static/image/db.png)
+![img.png](src/main/resources/static/image/img.png)
 
 Task
 Берём за основу существующее приложение и переезжаем на Spring boot 3.2.* в ветке feature/boot
