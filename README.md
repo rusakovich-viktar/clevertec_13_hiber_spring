@@ -15,8 +15,12 @@ Web приложение учёта домов и жильцов
 
 2.Скрипты запускаются автоматически через flywayMigration. 
 
+3. Добавлен экспорт из Postman для работы с приложением
+HousesProject.postman_collection.json
+ 
+
 ```
-![img.png](src/main/resources/static/image/img.png)
+![img.png](img.png)
 
 Task
 Берём за основу существующее приложение и переезжаем на Spring boot 3.2.* в ветке feature/boot
