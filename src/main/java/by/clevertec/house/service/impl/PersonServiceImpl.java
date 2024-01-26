@@ -87,7 +87,7 @@ public class PersonServiceImpl implements PersonService {
         if (mappedPerson.getUuid() == null) {
             mappedPerson.setUuid(UUID.randomUUID());
         }
-        House houseEntity = returnHouseResidentIfExist(personDto);
+        House houseEntity = returnHouseTenantIfExist(personDto);
         mappedPerson.setHouse(houseEntity);
 
         Person savedPerson = personRepository.save(mappedPerson);
@@ -179,10 +179,28 @@ public class PersonServiceImpl implements PersonService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<HouseResponseDto> getOwnedHouses(UUID personUuid) {
+    public List<HouseResponseDto> getOwnedHousesByPersonUuid(UUID personUuid) {
         Optional.ofNullable(personUuid).orElseThrow(() -> new IllegalArgumentException("UUID cannot be null"));
         List<House> houses = houseRepository.getHousesByOwnersUuid(personUuid);
         return houses.isEmpty() ? Collections.emptyList() : houses.stream().map(houseMapper::toDto).collect(toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<HouseResponseDto> getPastTenants(UUID uuid) {
+        List<House> getPastTenants = houseRepository.getPastTenantsByUuid(uuid);
+        return getPastTenants.stream()
+                .map(houseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<HouseResponseDto> getPastOwnedHouses(UUID uuid) {
+        List<House> pastOwnedHouses = houseRepository.findPastOwnedHousesByUuid(uuid);
+        return pastOwnedHouses.stream()
+                .map(houseMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -206,7 +224,7 @@ public class PersonServiceImpl implements PersonService {
      */
     private void updateHouse(Person person, PersonRequestDto dto) {
         if (dto.getHouseUuid() != null && !dto.getHouseUuid().equals(person.getHouse().getUuid())) {
-            House house = returnHouseResidentIfExist(dto);
+            House house = returnHouseTenantIfExist(dto);
             person.setHouse(house);
         }
     }
@@ -227,7 +245,15 @@ public class PersonServiceImpl implements PersonService {
 
             if (!dtoUuids.equals(entityUuids)) {
                 List<House> listHouseOwners = getListHouseOwnersIfExist(dto);
-                person.setOwnedHouses(listHouseOwners);
+                List<House> oldHouses = new ArrayList<>(person.getOwnedHouses());
+
+                person.getOwnedHouses().clear();
+                person.getOwnedHouses().addAll(listHouseOwners);
+
+                for (House house : oldHouses) {
+                    house.getOwners().remove(person);
+                    houseRepository.save(house);
+                }
 
                 for (House house : listHouseOwners) {
                     house.getOwners().add(person);
@@ -275,7 +301,7 @@ public class PersonServiceImpl implements PersonService {
      * @throws IllegalArgumentException если UUID отсутствует.
      * @throws EntityNotFoundException  если дом не найден.
      */
-    private House returnHouseResidentIfExist(PersonRequestDto personDto) {
+    private House returnHouseTenantIfExist(PersonRequestDto personDto) {
         UUID houseUuid = personDto.getHouseUuid();
         if (houseUuid == null) {
             throw new IllegalArgumentException("UUID обязателен");

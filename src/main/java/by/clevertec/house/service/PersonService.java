@@ -21,7 +21,11 @@ public interface PersonService {
 
     void updatePersonFields(UUID uuid, Map<String, Object> updates);
 
-    List<HouseResponseDto> getOwnedHouses(UUID uuid);
+    List<HouseResponseDto> getOwnedHousesByPersonUuid(UUID uuid);
+
+    List<HouseResponseDto> getPastTenants(UUID uuid);
+
+    List<HouseResponseDto> getPastOwnedHouses(UUID uuid);
 
 }
 

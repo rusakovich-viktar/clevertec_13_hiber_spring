@@ -60,7 +60,7 @@ public class House {
     private LocalDateTime createDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "house")
-    private List<Person> residents;
+    private List<Person> tenants;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

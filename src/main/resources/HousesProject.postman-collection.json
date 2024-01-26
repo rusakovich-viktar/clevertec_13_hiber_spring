@@ -200,11 +200,11 @@
 			]
 		},
 		{
-			"name": "GetResidentsByHouseUUID",
+			"name": "GetTenantsByHouseUUID",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/residents"
+				"url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/tenants"
 			},
 			"response": []
 		},
@@ -213,7 +213,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/residents"
+				"url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/tenants"
 			},
 			"response": []
 		}

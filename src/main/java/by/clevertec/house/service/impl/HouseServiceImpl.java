@@ -10,10 +10,12 @@ import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.entity.House;
+import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.repository.HouseRepository;
+import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.service.HouseService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -39,6 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class HouseServiceImpl implements HouseService {
 
     private final HouseRepository houseRepository;
+
+    private final PersonRepository personRepository;
     private final HouseMapper houseMapper;
     private final PersonMapper personMapper;
     private final Validator validator;
@@ -162,11 +166,29 @@ public class HouseServiceImpl implements HouseService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> getResidents(UUID uuid) {
+    public List<PersonResponseDto> getTenantsByHouseUuid(UUID uuid) {
         House house = houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
-        return house.getResidents().stream()
+        return house.getTenants().stream()
                 .map(personMapper::toDto)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonResponseDto> getPastTenantsByHouseUuid(UUID uuid) {
+        List<Person> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
+        return pastTenants.stream()
+                .map(personMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonResponseDto> getPastOwnersByHouseUuid(UUID uuid) {
+        List<Person> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
+        return pastOwners.stream()
+                .map(personMapper::toDto)
                 .collect(Collectors.toList());
     }
 

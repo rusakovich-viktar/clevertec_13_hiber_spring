@@ -119,8 +119,20 @@ public class PersonController {
      */
     @GetMapping("/{uuid}/ownedHouses")
     public ResponseEntity<List<HouseResponseDto>> getOwnedHouses(@PathVariable UUID uuid) {
-        List<HouseResponseDto> ownedHouses = personService.getOwnedHouses(uuid);
+        List<HouseResponseDto> ownedHouses = personService.getOwnedHousesByPersonUuid(uuid);
         return ResponseEntity.ok(ownedHouses);
 
+    }
+
+    @GetMapping("/{uuid}/residences/history")
+    public ResponseEntity<List<HouseResponseDto>> getPastResidences(@PathVariable UUID uuid) {
+        List<HouseResponseDto> residences = personService.getPastTenants(uuid);
+        return ResponseEntity.ok(residences);
+    }
+
+    @GetMapping("/{uuid}/ownedHouses/history")
+    public ResponseEntity<List<HouseResponseDto>> getPastOwnedHouses(@PathVariable UUID uuid) {
+        List<HouseResponseDto> ownedHouses = personService.getPastOwnedHouses(uuid);
+        return ResponseEntity.ok(ownedHouses);
     }
 }

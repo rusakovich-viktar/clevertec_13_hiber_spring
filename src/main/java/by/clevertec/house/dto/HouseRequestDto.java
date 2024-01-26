@@ -34,6 +34,6 @@ public class HouseRequestDto {
     @NotEmpty(message = "Поле 'number' не может быть пустым")
     private String number;
 
-    private List<UUID> residentUuids;
+    private List<UUID> tenantUuids;
     private List<UUID> ownerUuids;
 }

@@ -2,10 +2,8 @@
 CREATE OR REPLACE FUNCTION update_tenant_history() RETURNS TRIGGER AS $$
 BEGIN
     -- Проверка на то, что произошло обновление поля house_id
-    IF (TG_OP = 'UPDATE' AND NEW.house_id IS DISTINCT FROM OLD.house_id) THEN
         INSERT INTO house_history (house_id, person_id, date, type)
         VALUES (NEW.house_id, NEW.id, NOW(), 'TENANT');
-    END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

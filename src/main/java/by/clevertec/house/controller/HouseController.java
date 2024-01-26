@@ -117,9 +117,22 @@ public class HouseController {
      * @param uuid UUID дома.
      * @return ResponseEntity со списком жителей дома.
      */
-    @GetMapping("/{uuid}/residents")
-    public ResponseEntity<List<PersonResponseDto>> getResidents(@PathVariable UUID uuid) {
-        List<PersonResponseDto> residents = houseService.getResidents(uuid);
-        return ResponseEntity.ok(residents);
+    @GetMapping("/{uuid}/tenants")
+    public ResponseEntity<List<PersonResponseDto>> getTenants(@PathVariable UUID uuid) {
+        List<PersonResponseDto> tenants = houseService.getTenantsByHouseUuid(uuid);
+        return ResponseEntity.ok(tenants);
     }
+
+    @GetMapping("/{uuid}/tenants/history")
+    public ResponseEntity<List<PersonResponseDto>> getPastTenants(@PathVariable UUID uuid) {
+        List<PersonResponseDto> tenants = houseService.getPastTenantsByHouseUuid(uuid);
+        return ResponseEntity.ok(tenants);
+    }
+
+    @GetMapping("/{uuid}/owners/history")
+    public ResponseEntity<List<PersonResponseDto>> getPastOwners(@PathVariable UUID uuid) {
+        List<PersonResponseDto> owners = houseService.getPastOwnersByHouseUuid(uuid);
+        return ResponseEntity.ok(owners);
+    }
+
 }
