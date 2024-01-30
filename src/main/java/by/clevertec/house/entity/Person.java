@@ -64,7 +64,7 @@ public class Person {
     @Column(name = "update_date", nullable = false)
     private LocalDateTime updateDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id", nullable = false)
     private House house;
 

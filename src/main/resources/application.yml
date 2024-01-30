@@ -1,18 +1,31 @@
 spring:
   datasource:
-    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/house
     username: postgres
     password: postgres
   jpa:
     properties:
       hibernate:
+        show-sql: true
         format_sql: true
-    show-sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      hbm2ddl:
-        auto: none
+      ddl-auto: none
       #        'create', 'create-drop', 'create-only', 'drop', 'update', 'none', 'validate'.
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-flyway:
-  enabled: true
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    enabled: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+cache:
+  algorithm: LRU
+  capacity: 50
+

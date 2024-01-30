@@ -1,84 +1,69 @@
+# :satellite: О проекте
 
-
-# :satellite: О проекте  
 Web приложение учёта домов и жильцов
-Реализованы все задачи из задания, кроме полнотекстового поиска.
+Подключен SpringBoot
+Подключен DataJPA
+Реализован базовый функционал
+
 ## :gear: Как запустить проект:
 
 ```bash
 
 0. Склонировать репозиторий себе на компьютер
 
-1.Запускаем контейнер сервлетов Tomcat.
+1.Запускаем DemoApplication через SpringBoot
 
-2.Скрипты запускаются автоматически через flywayMigration. Переключатель для включения-выключения Flyway в application.yml
-flyway:
-  enabled: true
+2.Скрипты запускаются автоматически через flywayMigration. 
 
-Также инициализировать базу можно через JPA переключив перекоючатель из положения none в create   
-jpa:
-    hibernate:
-      hbm2ddl:
-        auto: none  
+3. Добавлен экспорт из Postman для работы с приложением
+HousesProject.postman_collection.json
+ 
 
-3.Скрипты для ручного запуска находятся в resources/db/migration
-4. Для упрощения тестирования в resources/HousesProject.postman-collection.json лежит файл экспорта из POSTMAN
 ```
 
-![postman](src/main/resources/static/image/img.png)
+![img.png](img.png)
 
-![db](src/main/resources/static/image/db.png)
+Task
+Берём за основу существующее приложение и переезжаем на Spring boot 3.2.* в ветке feature/boot
 
+Добавляем сущность HouseHistory (id, house_id, person_id, date, type)
 
-Task - Hibernate
-Создать Web приложение учёта домов и жильцов
+1. type [OWNER, TENANT]
+   a. Создать свой тип данных в БД
+   b. Хранить как enum в коде
+2. При смене места жительства добавляем запись в HouseHistory [type = TENANT], с текущей датой
+3. При смене владельца, добавляем запись в HouseHistory [type = OWNER], с текущей датой
+4.
+    * Реализовать через триггер в БД
+5.
+    * Если используется миграция, дописать новый changeset, а не исправлять существующие.
 
-Описание:
-+2 сущности: House, Person
-Система должна предоставлять REST API для выполнения следующих операций:
-+CRUD для House
-+В GET запросах не выводить информацию о Person
-+CRUD для Person
-+В GET запросах не выводить информацию о House
-+Для GET операций использовать pagination (default size: 15)
+Добавляем методы:
 
-House:
-+У House обязаны быть поля id, uuid, area, country, city, street, number, create_date
-+House может иметь множество жильцов (0-n)
-+У House может быть множество владельцев (0-n)
-+create_date устанавливается один раз при создании
+1. GET для получения всех Person когда-либо проживавших в доме
+2. GET для получения всех Person когда-либо владевших домом
+3. GET для получения всех House где проживал Person
+4. GET для получения всех House которыми когда-либо владел Person
 
-Person: 
-+У Person обязаны быть id, uuid, name, surname, sex, passport_series, passport_number, create_date, update_date
-+Person обязан жить только в одном доме и не может быть бездомным
-+Person не обязан владеть хоть одним домом и может владеть множеством домов
-+Сочетание passport_series и passport_number уникально
-+sex должен быть [Male, Female]
-+Все связи обеспечить через id
-+Не возвращать id пользователям сервисов, для этого предназначено поле uuid
-+create_date устанавливается один раз при создании
-+update_date устанавливается при создании и изменяется каждый раз, когда меняется информация о Person. При этом, если запрос не изменяет информации, поле не должно обновиться
+Добавляем кэш из задания по рефлексии на сервисный слой House и Person.
 
-Примечание: 
-+Ограничения и нормализацию сделать на своё усмотрение
-+Поля представлены для хранения в базе данных. В коде могут отличаться
+1. Добавляем Integration тесты, чтобы кэш работал в многопоточной среде.
+2. Делаем экзекутор на 6 потоков и параллельно вызываем сервисный слой (GET\POST\PUT\DELETE) и проверяем, что результат
+   соответствует ожиданиям.
+3. Используем H2 или *testcontainers
 
-Обязательно:
-+GET для всех Person проживающих в House
-+GET для всех House, владельцем которых является Person
-+Конфигурационный файл: application.yml
-+Скрипты для создания таблиц должны лежать в classpath:db/
-+create_date, update_date - возвращать в формате ISO-8601 (https://en.wikipedia.org/wiki/ISO_8601). Пример: 2018-08-29T06:12:15.156.
-+Добавить 5 домов и 10 жильцов. Один дом без жильцов и как минимум в 1 доме больше 1 владельца
+* Добавляем swagger (OPEN API)
+  ** Добавляем starter:
 
+1. **Реализовываем мультипроект
+2. **Реализовываем свой cache-starter (из задания по рефлексии)
+3. **Добавляем таску с build в mavenLocal
+4. **Добавляем стартер в основное приложение, через mavelLocal
+5. **Удаляем все классы из основного приложения
 
+Следуем Application requirements из задания по Hibernate
 
-
-Дополнительно:
-+*Добавить миграцию
-*Полнотекстовый поиск (любое текстовое поле) для House
-*Полнотекстовый поиск (любое текстовое поле) для Person
-++**PATCH для Person и House
+Заполнить и отправить форму
 
 Application requirements
 JDK version: 17 – use Streams, java.time.*, etc. where it is possible.
@@ -103,13 +88,11 @@ Code should contain valuable comments where appropriate.
 Public APIs should be documented (Javadoc).
 Clear layered structure should be used with responsibilities of each application layer defined.
 JSON should be used as a format of client-server communication messages.
-Convenient error/exception handling mechanism should be implemented: all errors should be meaningful on backend side. Example: handle 404 error:
+Convenient error/exception handling mechanism should be implemented: all errors should be meaningful on backend side.
+Example: handle 404 error:
 HTTP Status: 404
-response body    
-{
- “errorMessage”: “Requested resource not found (uuid = f4fe3df1-22cd-49ce-a54d-86f55a7f372e)”,
- “errorCode”: 40401
- }
+response body { “errorMessage”: “Requested resource not found (uuid = f4fe3df1-22cd-49ce-a54d-86f55a7f372e)”,
+“errorCode”: 40401 }
 
 where *errorCode” is your custom code (it can be based on http status and requested resource - person or house)
 Abstraction should be used everywhere to avoid code duplication.

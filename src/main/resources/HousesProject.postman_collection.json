@@ -1,0 +1,393 @@
+{
+  "info": {
+    "_postman_id": "02736618-1dc0-4001-b07f-47adac74b534",
+    "name": "HousesProject",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "25512531"
+  },
+  "item": [
+    {
+      "name": "HouseCRUD",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"area\": 120.5,\r\n    \"city\": \"Minsk\",\r\n    \"country\": \"Belarus\",\r\n    \"number\": \"123\",\r\n    \"street\": \"Main Street\",\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440011\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses"
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses"
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllWithPagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/houses?pageNumber=1&pageSize=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "houses"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetByUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateByUUID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"area\": 120.5,\r\n    \"country\": \"Poland\",\r\n    \"city\": \"Minsk\",\r\n    \"street\": \"Main Street\",\r\n    \"number\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+          },
+          "response": []
+        },
+        {
+          "name": "PatchByUUID",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"country\": \"Poland\",\r\n    \"city\": \"Krakow\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteByUUID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PersonCRUD",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440004\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440011\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440011\", \"550e8400-e29b-41d4-a716-446655440011\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/persons"
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/persons"
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllWithPagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/persons?pageNumber=1&pageSize=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "persons"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetByUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateByUUID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"updated\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+          },
+          "response": []
+        },
+        {
+          "name": "PatchByUUID",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"patched\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"FEMALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteByUUID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "actions",
+      "item": [
+        {
+          "name": "CreateHouse00",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"area\": 120.5,\r\n    \"city\": \"Minsk\",\r\n    \"country\": \"Belarus\",\r\n    \"number\": \"123\",\r\n    \"street\": \"Main Street\",\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateHouse01",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"area\": 120.5,\r\n    \"city\": \"Minsk\",\r\n    \"country\": \"Belarus\",\r\n    \"number\": \"123\",\r\n    \"street\": \"Main Street\",\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440001\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses"
+          },
+          "response": []
+        },
+        {
+          "name": "CreatePerson02res01own01",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440002\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440001\", \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/persons"
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateByUUIDPers02res00own00",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses/1"
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateByUUIDPers02res01own01",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440002\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440001\", \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:8080/houses/1"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "history",
+      "item": [
+        {
+          "name": "GetTenantsHistoryByHouseUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440001/tenants/history"
+          },
+          "response": []
+        },
+        {
+          "name": "GetOwnersHistoryByHouseUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440001/owners/history"
+          },
+          "response": []
+        },
+        {
+          "name": "GetTenantedHousesHistoryByPersonUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440002/tenants/history"
+          },
+          "response": []
+        },
+        {
+          "name": "GetOwnedHousesHistoryByPersonUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440002/tenants/history"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GetTenantsByHouseUUID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440001/tenants"
+      },
+      "response": []
+    },
+    {
+      "name": "GetOwnedHousesByPersonUUID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/residents"
+      },
+      "response": []
+    }
+  ]
+}

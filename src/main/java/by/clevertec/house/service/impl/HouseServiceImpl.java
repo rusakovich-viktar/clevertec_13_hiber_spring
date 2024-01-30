@@ -6,14 +6,18 @@ import static by.clevertec.house.util.Constant.Attributes.COUNTRY;
 import static by.clevertec.house.util.Constant.Attributes.NUMBER;
 import static by.clevertec.house.util.Constant.Attributes.STREET;
 
-import by.clevertec.house.dao.HouseDao;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
+import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
+import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
+import by.clevertec.house.proxy.annotation.Cacheable;
+import by.clevertec.house.repository.HouseRepository;
+import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.service.HouseService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -21,11 +25,12 @@ import jakarta.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
  * Обрабатывает бизнес-логику, связанную с домами.
  */
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class HouseServiceImpl implements HouseService {
 
-    private final HouseDao houseDao;
+    private final HouseRepository houseRepository;
+
+    private final PersonRepository personRepository;
     private final HouseMapper houseMapper;
     private final PersonMapper personMapper;
     private final Validator validator;
@@ -49,10 +55,15 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid UUID дома.
      * @return DTO дома.
      */
+
     @Transactional(readOnly = true)
+    @Cacheable
     @Override
     public HouseResponseDto getHouseByUuid(UUID uuid) {
-        return houseMapper.toDto(houseDao.getHouseByUuid(uuid));
+        House house = houseRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
+        return houseMapper.toDto(house);
     }
 
     /**
@@ -62,10 +73,12 @@ public class HouseServiceImpl implements HouseService {
      * @param pageSize   размер страницы.
      * @return Список DTO домов.
      */
+
     @Transactional(readOnly = true)
     @Override
     public List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize) {
-        return houseDao.getAllHouses(pageNumber, pageSize).stream()
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return houseRepository.findAll(pageable).stream()
                 .map(houseMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -75,12 +88,14 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param houseDto DTO дома.
      */
+
     @Transactional
+    @Cacheable
     @Override
     public void saveHouse(HouseRequestDto houseDto) {
         House house = houseMapper.toEntity(houseDto);
         house.setCreateDate(LocalDateTime.now());
-        houseDao.saveHouse(house);
+        houseRepository.save(house);
     }
 
     /**
@@ -89,23 +104,22 @@ public class HouseServiceImpl implements HouseService {
      * @param uuid     UUID дома.
      * @param houseDto DTO дома с новой информацией.
      */
+
     @Transactional
+    @Cacheable
     @Override
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         Set<ConstraintViolation<HouseRequestDto>> violations = validator.validate(houseDto);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
+        House house = houseRepository
+                .findByUuid(uuid)
+                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
 
-        House house = houseDao.getHouseByUuid(uuid);
+        houseMapper.updateHouseFromDto(houseDto, house);
 
-        house.setArea(houseDto.getArea());
-        house.setCountry(houseDto.getCountry());
-        house.setCity(houseDto.getCity());
-        house.setStreet(houseDto.getStreet());
-        house.setNumber(houseDto.getNumber());
-
-        houseDao.updateHouse(house);
+        houseRepository.save(house);
     }
 
     /**
@@ -113,10 +127,12 @@ public class HouseServiceImpl implements HouseService {
      *
      * @param uuid UUID дома.
      */
+
     @Transactional
+    @Cacheable
     @Override
     public void deleteHouse(UUID uuid) {
-        houseDao.deleteHouse(uuid);
+        houseRepository.deleteByUuid(uuid);
     }
 
     /**
@@ -128,8 +144,8 @@ public class HouseServiceImpl implements HouseService {
     @Transactional
     @Override
     public void updateHouseFields(UUID uuid, Map<String, Object> updates) {
-        House existingHouse = Optional.ofNullable(houseDao.getHouseByUuid(uuid))
-                .orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
+        House existingHouse = houseRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("House not found"));
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
             if (entry.getValue() != null) {
                 switch (entry.getKey()) {
@@ -141,7 +157,7 @@ public class HouseServiceImpl implements HouseService {
                 }
             }
         }
-        houseDao.updateHouse(existingHouse);
+        houseRepository.save(existingHouse);
     }
 
     /**
@@ -152,11 +168,37 @@ public class HouseServiceImpl implements HouseService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> getResidents(UUID uuid) {
-        House house = houseDao.getHouseByUuid(uuid);
-        return house.getResidents().stream()
+    public List<PersonResponseDto> getTenantsByHouseUuid(UUID uuid) {
+        House house = houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
+        return house.getTenants().stream()
                 .map(personMapper::toDto)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonWithHistoryDto> getPastTenantsByHouseUuid(UUID uuid) {
+        List<Object[]> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
+        return pastTenants.stream()
+                .map(obj -> {
+                    Person person = (Person) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return personMapper.toPersonWithHistoryDto(person, date);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonWithHistoryDto> getPastOwnersByHouseUuid(UUID uuid) {
+        List<Object[]> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
+        return pastOwners.stream()
+                .map(obj -> {
+                    Person person = (Person) obj[0];
+                    LocalDateTime date = (LocalDateTime) obj[1];
+                    return personMapper.toPersonWithHistoryDto(person, date);
+                })
                 .collect(Collectors.toList());
     }
 
