@@ -1,12 +1,16 @@
 package by.clevertec.house.util;
 
+import static by.clevertec.house.util.TestConstant.HOUSE_ONE_UUID;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_CREATE_DATE;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_NAME;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_SURNAME;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_UPDATE_DATE;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_UUID;
 
+import by.clevertec.house.dto.PersonRequestDto;
+import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
 import by.clevertec.house.dto.PersonResponseDto;
+import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.PassportData;
 import by.clevertec.house.entity.Person;
@@ -35,8 +39,14 @@ public class PersonTestBuilder {
     private Sex sex = Sex.MALE;
 
     @Builder.Default
-    private PassportData passportData = PassportTestBuilder.builder().build().buildPassport();
+    private PassportData passportData = PassportTestBuilder.builder()
+            .build()
+            .buildPassport();
 
+    @Builder.Default
+    private PassportDataDto passportDataDto = PassportTestBuilder.builder()
+            .build()
+            .buildPassportDto();
     @Builder.Default
     private House house = HouseTestBuilder.builder().build().buildHouse();
 
@@ -80,5 +90,25 @@ public class PersonTestBuilder {
         personResponseDto.setUpdateDate(person.getUpdateDate().toString());
         return personResponseDto;
     }
-}
 
+    public PersonWithHistoryDto buildPersonWithHistoryDto() {
+        PersonWithHistoryDto personWithHistoryDto = new PersonWithHistoryDto();
+        personWithHistoryDto.setHistoryDate(personWithHistoryDto.getHistoryDate());
+        personWithHistoryDto.setName(personWithHistoryDto.getName());
+        personWithHistoryDto.setSurname(personWithHistoryDto.getSurname());
+        personWithHistoryDto.setUuid(personWithHistoryDto.getUuid());
+        return personWithHistoryDto;
+    }
+
+    public PersonRequestDto buildPersonRequestDto() {
+        PersonRequestDto personRequestDto = new PersonRequestDto();
+        personRequestDto.setUuid(uuid);
+        personRequestDto.setName(name);
+        personRequestDto.setSurname(surname);
+        personRequestDto.setSex(sex);
+        personRequestDto.setPassportData(passportDataDto);
+        personRequestDto.setHouseUuid(TestConstant.HOUSE_ONE_UUID);
+        personRequestDto.setOwnedHouseUuids(List.of(HOUSE_ONE_UUID));
+        return personRequestDto;
+    }
+}

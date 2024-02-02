@@ -50,7 +50,7 @@ public class HouseTestBuilderTwo {
     @Builder.Default
     private Set<Person> owners = new HashSet<>();
 
-    public House buildHouse() {
+    public House buildHouseTwo() {
         House house = new House();
         house.setUuid(uuid);
         house.setArea(area);
@@ -65,7 +65,7 @@ public class HouseTestBuilderTwo {
     }
 
     public HouseResponseDto buildHouseResponseDto() {
-        House house = this.buildHouse();
+        House house = this.buildHouseTwo();
         HouseResponseDto houseResponseDto = new HouseResponseDto();
         houseResponseDto.setUuid(house.getUuid());
         houseResponseDto.setArea(house.getArea());
@@ -77,4 +77,3 @@ public class HouseTestBuilderTwo {
         return houseResponseDto;
     }
 }
-

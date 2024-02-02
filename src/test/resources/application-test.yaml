@@ -1,7 +1,7 @@
 spring:
   datasource:
-#    username: test
-#    password: test
+    #    username: test
+    #    password: test
     url: jdbc:tc:postgresql:15.1-alpine://items
 
   flyway:

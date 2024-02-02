@@ -17,7 +17,8 @@ WITH inserted_house AS (
                 '550e8400-e29b-41d4-a716-446655440000'::uuid)
         RETURNING id),
      inserted_person AS (
-         INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid, house_id)
+         INSERT INTO persons (create_date, name, passport_number, passport_series, sex, surname, update_date, uuid,
+                              house_id)
              SELECT '2024-02-01 10:10:10',                  -- create_date
                     'Иван',                                 -- name
                     '1234567',                              -- passport_number
@@ -29,6 +30,8 @@ WITH inserted_house AS (
                     id                                      -- house_id
              FROM inserted_house
              RETURNING id)
-INSERT INTO house_owner (house_id, owner_id)
+INSERT
+INTO house_owner (house_id, owner_id)
 SELECT inserted_house.id, inserted_person.id
-FROM inserted_house, inserted_person;
+FROM inserted_house,
+     inserted_person;

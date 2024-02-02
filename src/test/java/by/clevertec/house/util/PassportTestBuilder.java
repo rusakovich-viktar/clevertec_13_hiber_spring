@@ -4,7 +4,6 @@ import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
 import by.clevertec.house.entity.PassportData;
 import lombok.Builder;
 
-
 @Builder(setterPrefix = "with")
 public class PassportTestBuilder {
 

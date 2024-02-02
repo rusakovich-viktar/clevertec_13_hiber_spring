@@ -39,13 +39,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@WebMvcTest(HouseController.class)
 @RequiredArgsConstructor
+@WebMvcTest(HouseController.class)
 class HouseControllerTest {
 
     private final MockMvc mockMvc;
 
     private final ObjectMapper objectMapper;
+
+    private final UUID randomUUID = UUID.randomUUID();
 
     @MockBean
     private final HouseService houseService;
@@ -76,11 +78,11 @@ class HouseControllerTest {
 
         @Test
         void getByUuidShouldShouldThrowNotFound_whenInvalidUuid() throws Exception {
-            UUID invalidUuid = UUID.randomUUID();
-            String url = "/houses/" + invalidUuid;
-            EntityNotFoundException exception = EntityNotFoundException.of(House.class, invalidUuid);
 
-            when(houseService.getHouseByUuid(invalidUuid)).thenThrow(exception);
+            String url = "/houses/" + randomUUID;
+            EntityNotFoundException exception = EntityNotFoundException.of(House.class, randomUUID);
+
+            when(houseService.getHouseByUuid(randomUUID)).thenThrow(exception);
 
             mockMvc.perform(get(url))
                     .andExpect(status().isNotFound())
@@ -116,7 +118,7 @@ class HouseControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().json(objectMapper.writeValueAsString(expectedHouses)))
 
-                    .andExpect(jsonPath("$", hasSize(2)))
+                    .andExpect(jsonPath("$", hasSize(expectedHouses.size())))
                     .andExpect(jsonPath("$[0].uuid", is(houseOne.getUuid().toString())))
                     .andExpect(jsonPath("$[0].area", is(houseOne.getArea())))
                     .andExpect(jsonPath("$[0].country", is(houseOne.getCountry())))
@@ -152,6 +154,18 @@ class HouseControllerTest {
 
             verify(houseService, times(1)).saveHouse(requestDto);
         }
+
+        @Test
+        void saveHouseShouldReturnBadRequest_whenMissingRequiredFields() throws Exception {
+            // given
+            HouseRequestDto requestDto = new HouseRequestDto();
+
+            // when & then
+            mockMvc.perform(post("/houses")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new ObjectMapper().writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     @Nested
@@ -171,6 +185,18 @@ class HouseControllerTest {
                     .andExpect(status().isOk());
 
             verify(houseService, times(1)).updateHouse(requestDto.getUuid(), requestDto);
+        }
+
+        @Test
+        void updateHouseShouldReturnBadRequest_whenInvalidData() throws Exception {
+            // given
+            HouseRequestDto requestDto = new HouseRequestDto(); //
+
+            // when & then
+            mockMvc.perform(put("/houses/" + randomUUID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new ObjectMapper().writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
         }
     }
 
@@ -220,7 +246,7 @@ class HouseControllerTest {
             UUID uuid = TestConstant.HOUSE_ONE_UUID;
             PersonResponseDto tenantOne = PersonTestBuilder.builder().build().buildPersonResponseDto();
             PersonResponseDto tenantTwo = PersonTestBuilder.builder()
-                    .withUuid(UUID.randomUUID())
+                    .withUuid(randomUUID)
                     .withName("Jane")
                     .withSurname("Doe")
                     .withSex(Sex.FEMALE)
@@ -248,4 +274,5 @@ class HouseControllerTest {
                     .andExpect(jsonPath("$[1].updateDate", is(tenantTwo.getUpdateDate())));
         }
     }
+
 }

@@ -60,11 +60,5 @@ class PersonRepositoryTest {
         assertFalse(actual.isPresent());
     }
 
-    @Test
-    void findPastTenantsByHouseUuid() {
-    }
 
-    @Test
-    void findPastOwnersByHouseUuid() {
-    }
 }

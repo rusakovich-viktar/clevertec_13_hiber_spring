@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constant {
 
+
     @UtilityClass
     public class ErrorMessages {
 
@@ -23,6 +24,10 @@ public class Constant {
         public static final String CITY = "city";
         public static final String STREET = "street";
         public static final String NUMBER = "number";
+        //Чтобы пользователь начинал с первой страницы, а не с нулевой
+        public static final int VALUE_ONE_TO_SIMPLIFY_UI = 1;
+        public static final String NAME = "name";
+        public static final String SURNAME = "surname";
     }
 
 }

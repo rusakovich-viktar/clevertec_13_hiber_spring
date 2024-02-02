@@ -26,7 +26,9 @@ public class TestConstant {
     public static final String PERSON_ONE_PASSPORT_NUMBER = "1234567";
     public static final LocalDateTime PERSON_ONE_CREATE_DATE = LocalDateTime.of(2024, 2, 1, 10, 10, 10);
     public static final LocalDateTime PERSON_ONE_UPDATE_DATE = LocalDateTime.of(2024, 2, 1, 20, 20, 20);
-    public static final int PAGE_NUMBER_IS_POSITIVE = 1;
+    public static final int PAGE_NUMBER_SHOULD_BE_POSITIVE = 1;
     public static final int PAGE_SIZE = 15;
+    public static final String ALEX = "Alex";
+    public static final String ALEXEEY = "Alexeev";
 
 }

@@ -5,6 +5,7 @@ import static by.clevertec.house.util.Constant.Attributes.CITY;
 import static by.clevertec.house.util.Constant.Attributes.COUNTRY;
 import static by.clevertec.house.util.Constant.Attributes.NUMBER;
 import static by.clevertec.house.util.Constant.Attributes.STREET;
+import static by.clevertec.house.util.Constant.Attributes.VALUE_ONE_TO_SIMPLIFY_UI;
 
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
@@ -77,7 +78,7 @@ public class HouseServiceImpl implements HouseService {
     @Transactional(readOnly = true)
     @Override
     public List<HouseResponseDto> getAllHouses(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - VALUE_ONE_TO_SIMPLIFY_UI, pageSize);
         return houseRepository.findAll(pageable).stream()
                 .map(houseMapper::toDto)
                 .collect(Collectors.toList());
@@ -169,7 +170,8 @@ public class HouseServiceImpl implements HouseService {
     @Transactional(readOnly = true)
     @Override
     public List<PersonResponseDto> getTenantsByHouseUuid(UUID uuid) {
-        House house = houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
+        House house = houseRepository.findByUuid(uuid).orElseThrow(() ->
+                EntityNotFoundException.of(House.class, uuid));
         return house.getTenants().stream()
                 .map(personMapper::toDto)
                 .distinct()
@@ -180,20 +182,18 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public List<PersonWithHistoryDto> getPastTenantsByHouseUuid(UUID uuid) {
         List<Object[]> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
-        return pastTenants.stream()
-                .map(obj -> {
-                    Person person = (Person) obj[0];
-                    LocalDateTime date = (LocalDateTime) obj[1];
-                    return personMapper.toPersonWithHistoryDto(person, date);
-                })
-                .collect(Collectors.toList());
+        return getCollectObjectListToPersonWithHistoryDtoList(pastTenants);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<PersonWithHistoryDto> getPastOwnersByHouseUuid(UUID uuid) {
         List<Object[]> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
-        return pastOwners.stream()
+        return getCollectObjectListToPersonWithHistoryDtoList(pastOwners);
+    }
+
+    private List<PersonWithHistoryDto> getCollectObjectListToPersonWithHistoryDtoList(List<Object[]> pastTenants) {
+        return pastTenants.stream()
                 .map(obj -> {
                     Person person = (Person) obj[0];
                     LocalDateTime date = (LocalDateTime) obj[1];
