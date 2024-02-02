@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 /**
  * HouseEntity.
@@ -32,6 +33,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "houses")
+@FieldNameConstants
 public class House {
 
     @Id

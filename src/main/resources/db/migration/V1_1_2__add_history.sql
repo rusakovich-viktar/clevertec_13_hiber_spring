@@ -9,10 +9,3 @@ create table if not exists house_history
         constraint house_history_type_check
             check ((type)::text = ANY ((ARRAY ['OWNER'::character varying, 'TENANT'::character varying])::text[]))
 );
-
-ALTER TABLE house_history
-    ADD CONSTRAINT house_fk FOREIGN KEY (house_id) REFERENCES houses (id),
-    ADD CONSTRAINT person_fk FOREIGN KEY (person_id) REFERENCES persons (id);
-
-alter table house_history
-    owner to postgres;

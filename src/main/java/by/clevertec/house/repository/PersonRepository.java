@@ -14,14 +14,14 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
     void deleteByUuid(UUID uuid);
 
     @Query("SELECT p, hh.date FROM Person p "
-            + "JOIN FETCH House h ON p.house = h "
-            + "JOIN FETCH HouseHistory hh ON h = hh.house "
+            + "JOIN FETCH House h ON p.house.id = h.id "
+            + "JOIN FETCH HouseHistory hh ON h.id = hh.houseId "
             + "WHERE h.uuid = :uuid AND hh.type = 'TENANT'")
     List<Object[]> findPastTenantsByHouseUuid(UUID uuid);
 
     @Query("SELECT p, hh.date FROM Person p "
-            + "JOIN FETCH House h ON p.house = h "
-            + "JOIN FETCH HouseHistory hh ON h = hh.house "
+            + "JOIN FETCH House h ON p.house.id = h.id "
+            + "JOIN FETCH HouseHistory hh ON h.id = hh.houseId "
             + "WHERE h.uuid = :uuid AND hh.type = 'OWNER'")
     List<Object[]> findPastOwnersByHouseUuid(UUID uuid);
 

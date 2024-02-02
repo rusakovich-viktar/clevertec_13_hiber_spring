@@ -182,8 +182,12 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<HouseResponseDto> getOwnedHousesByPersonUuid(UUID personUuid) {
         Optional.ofNullable(personUuid).orElseThrow(() -> new IllegalArgumentException("UUID cannot be null"));
-        List<House> houses = houseRepository.getHousesByOwnersUuid(personUuid);
-        return houses.isEmpty() ? Collections.emptyList() : houses.stream().map(houseMapper::toDto).collect(toList());
+        List<House> houses = houseRepository.getOwnedHousesByPersonUuid(personUuid);
+        return houses.isEmpty()
+                ? Collections.emptyList()
+                : houses.stream()
+                .map(houseMapper::toDto)
+                .collect(toList());
     }
 
     @Transactional(readOnly = true)

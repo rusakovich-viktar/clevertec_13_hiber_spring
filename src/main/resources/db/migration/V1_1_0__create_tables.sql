@@ -13,9 +13,6 @@ create table if not exists houses
             unique
 );
 
-alter table houses
-    owner to postgres;
-
 create table if not exists persons
 (
     id              bigserial
@@ -35,9 +32,6 @@ create table if not exists persons
         unique (passport_series, passport_number)
 );
 
-alter table persons
-    owner to postgres;
-
 create table if not exists house_owner
 (
     house_id bigint not null
@@ -48,6 +42,3 @@ create table if not exists house_owner
             references persons,
     primary key (house_id, owner_id)
 );
-
-alter table house_owner
-    owner to postgres;
