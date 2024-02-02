@@ -30,6 +30,7 @@ import by.clevertec.house.util.Constant.Attributes;
 import by.clevertec.house.util.HouseTestBuilder;
 import by.clevertec.house.util.PersonTestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,6 @@ class PersonControllerTest {
 
     @MockBean
     private final PersonService personService;
-
 
     @Nested
     class TestGetPersonByUuid {
@@ -209,9 +209,16 @@ class PersonControllerTest {
         @Test
         void updatePersonFieldsShouldReturnOk() throws Exception {
             // given
+            Map<String, Object> passportData = new HashMap<>();
+            passportData.put("passportSeries", null);
+            passportData.put("passportNumber", null);
+
             Map<String, Object> updates = new HashMap<>();
             updates.put(Attributes.NAME, ALEX);
             updates.put(Attributes.SURNAME, ALEXEEY);
+            updates.put(Attributes.SEX, "MALE");
+            updates.put(Attributes.PASSPORT_DATA, passportData);
+            updates.put(Attributes.HOUSE_UUID, HOUSE_TWO_UUID.toString());
 
             // when & then
             mockMvc.perform(patch("/persons/" + randomUUID)
@@ -222,6 +229,7 @@ class PersonControllerTest {
             verify(personService, times(1))
                     .updatePersonFields(randomUUID, updates);
         }
+
 
         @Test
         void updatePersonShouldReturnBadRequest_whenInvalidData() throws Exception {
@@ -256,7 +264,7 @@ class PersonControllerTest {
     class TestGetOwnedHouses {
 
         @Test
-        void getOwnedHousesShouldReturnListOfHouses() throws Exception {
+        void getOwnedHousesShouldReturnListOfHouses_whenPersonHaveOwnedHouses() throws Exception {
             // given
 
             HouseResponseDto houseOne = HouseTestBuilder.builder()
@@ -295,8 +303,10 @@ class PersonControllerTest {
         @Test
         void getOwnedHousesShouldReturnEmptyList_whenNoHouses() throws Exception {
             // given
+            List<HouseResponseDto> expectedHouses = Collections.emptyList();
+
             when(personService.getOwnedHousesByPersonUuid(randomUUID))
-                    .thenReturn(List.of());
+                    .thenReturn(expectedHouses);
 
             // when & then
             mockMvc.perform(get("/persons/" + randomUUID + "/owned-houses"))

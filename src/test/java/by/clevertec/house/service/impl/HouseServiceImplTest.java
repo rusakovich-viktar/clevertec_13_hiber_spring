@@ -26,21 +26,31 @@ import static org.mockito.Mockito.when;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
+import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.Person;
 import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.repository.HouseRepository;
+import by.clevertec.house.repository.PersonRepository;
 import by.clevertec.house.util.HouseTestBuilder;
 import by.clevertec.house.util.PersonTestBuilder;
+import by.clevertec.house.util.TestConstant;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,6 +66,8 @@ class HouseServiceImplTest {
 
     @Mock
     private HouseRepository houseRepository;
+    @Mock
+    private PersonRepository personRepository;
 
     @Mock
     private Validator validator;
@@ -74,7 +86,7 @@ class HouseServiceImplTest {
     private final UUID randomUuid = UUID.randomUUID();
 
     @Test
-    void getHouseByUuidShouldReturnHouse_whenItExist() {
+    void testGetHouseByUuidShouldReturnHouse_whenItExist() {
 
         // given
         House house = HouseTestBuilder.builder()
@@ -108,7 +120,7 @@ class HouseServiceImplTest {
     }
 
     @Test
-    void getHouseByUuidShouldThrowNotFound_whenInvalidUuid() {
+    void testGetHouseByUuidShouldThrowNotFound_whenInvalidUuid() {
         Exception exception = assertThrows(EntityNotFoundException.class, () ->
                 houseService.getHouseByUuid(randomUuid));
 
@@ -118,9 +130,8 @@ class HouseServiceImplTest {
         verifyNoMoreInteractions(houseRepository, houseMapper);
     }
 
-
     @Test
-    void getAllHouses() {
+    void testGetAllHouses() {
 
         // given
         Page page = mock(Page.class);
@@ -141,7 +152,7 @@ class HouseServiceImplTest {
     }
 
     @Test
-    void saveHouseShouldSaveCorrectHouse() {
+    void testSaveHouseShouldSaveCorrectHouse() {
         // given
         House expectedHouse = HouseTestBuilder.builder()
                 .build()
@@ -166,9 +177,8 @@ class HouseServiceImplTest {
                 "Saved house should match expected house");
     }
 
-
     @Test
-    void updateHouseShouldUpdateAndSaveCorrectHouse() {
+    void testUpdateHouseShouldUpdateAndSaveCorrectHouse() {
 
         // given
         HouseRequestDto houseDto = HouseTestBuilder.builder()
@@ -199,12 +209,30 @@ class HouseServiceImplTest {
         verify(validator).validate(houseDto);
         verify(houseRepository).findByUuid(existingHouse.getUuid());
         verify(houseMapper).updateHouseFromDto(houseDto, existingHouse);
-
-
     }
 
     @Test
-    void deleteHouseShouldCallRepositoryDeleteMethod() {
+    void testUpdateHouseShouldThrowConstraintViolationException_whenDtoIsInvalid() {
+        // given
+        HouseRequestDto houseDto = HouseTestBuilder.builder()
+                .build()
+                .buildHouseRequestDto();
+
+        Set<ConstraintViolation<HouseRequestDto>> violations = new HashSet<>();
+        violations.add(mock(ConstraintViolation.class));
+
+        when(validator.validate(houseDto))
+                .thenReturn(violations);
+
+        // then
+        assertThrows(ConstraintViolationException.class, () -> {
+            // when
+            houseService.updateHouse(UUID.randomUUID(), houseDto);
+        });
+    }
+
+    @Test
+    void testDeleteHouseShouldCallRepositoryDeleteMethod() {
         // when
         houseService.deleteHouse(randomUuid);
 
@@ -213,7 +241,7 @@ class HouseServiceImplTest {
     }
 
     @Test
-    void updateHouseFieldsShouldUpdateFieldsCorrectly() {
+    void testUpdateHouseFieldsShouldUpdateFieldsCorrectly() {
         // given
         House existingHouse = HouseTestBuilder.builder()
                 .build()
@@ -246,7 +274,7 @@ class HouseServiceImplTest {
     }
 
     @Test
-    void updateHouseFieldsShouldThrowException_whenInvalidUuid() {
+    void testUpdateHouseFieldsShouldThrowException_whenInvalidUuid() {
         // given
         Map<String, Object> updates = new HashMap<>();
         updates.put(AREA, HOUSE_TWO_AREA);
@@ -268,7 +296,7 @@ class HouseServiceImplTest {
     }
 
     @Test
-    void updateHouseShouldThrowException_whenInvalidUuid() {
+    void testUpdateHouseShouldThrowException_whenInvalidUuid() {
         // given
         HouseRequestDto houseDto = HouseTestBuilder.builder()
                 .build()
@@ -286,9 +314,8 @@ class HouseServiceImplTest {
         verifyNoMoreInteractions(houseRepository, houseMapper);
     }
 
-
     @Test
-    void getTenantsByHouseUuidShouldReturnCorrectList_whenItExist() {
+    void testGetTenantsByHouseUuidShouldReturnCorrectList_whenItExist() {
         // given
         House house = HouseTestBuilder.builder()
                 .build()
@@ -310,64 +337,96 @@ class HouseServiceImplTest {
                 .thenReturn(personResponseDto);
 
         // when
-        List<PersonResponseDto> actual = houseService.getTenantsByHouseUuid(house.getUuid());
+        List<PersonResponseDto> actual = houseService.getPersonsWhoLiveHereNowByHouseUuid(house.getUuid());
 
         // then
-        verify(houseRepository).findByUuid(house.getUuid());
+        verify(houseRepository)
+                .findByUuid(house.getUuid());
         assertEquals(expected, actual);
         verifyNoMoreInteractions(houseRepository, personMapper);
 
     }
 
     @Test
-    void getTenantsByHouseUuidShouldThrowException_whenHouseDoesNotExist() {
+    void testGetTenantsByHouseUuidShouldThrowException_whenHouseDoesNotExist() {
         // given
         when(houseRepository.findByUuid(randomUuid))
                 .thenReturn(Optional.empty());
 
         // when / then
         assertThrows(EntityNotFoundException.class, () ->
-                houseService.getTenantsByHouseUuid(randomUuid));
+                houseService.getPersonsWhoLiveHereNowByHouseUuid(randomUuid));
 
-        verify(houseRepository).findByUuid(randomUuid);
+        verify(houseRepository)
+                .findByUuid(randomUuid);
         verifyNoMoreInteractions(houseRepository, personMapper);
     }
 
-//    @Test
-//    void getPastTenantsByHouseUuidShouldReturnCorrectList_whenItExist() {
-//        // given
-//        Person person = PersonTestBuilder.builder()
-//                .build()
-//                .buildPerson();
-//
-//        PersonResponseDto personResponseDto = PersonTestBuilder.builder()
-//                .build()
-//                .buildPersonResponseDto();
-//        List<PersonResponseDto> expected = List.of(personResponseDto);
-//
-//        PersonWithHistoryDto personWithHistoryDto = PersonTestBuilder.builder()
-//                .build()
-//                .buildPersonWithHistoryDto();
-//
-//        LocalDateTime date = LocalDateTime.now();
-//        Object[] pastTenant = new Object[]{person, date};
-//        List<Object[]> pastTenants = List.of(pastTenant);
-//
-//        when(personRepository.findPastTenantsByHouseUuid(randomUuid))
-//                .thenReturn(pastTenants);
-//        when(personMapper.toPersonWithHistoryDto(person, date))
-//                .thenReturn(personWithHistoryDto);
-//
-//        // when
-//        List<PersonWithHistoryDto> actual = houseService.getPastTenantsByHouseUuid(randomUuid);
-//
-//        // then
-//        assertEquals(1, actual.size());
-//        assertEquals(personWithHistoryDto, actual.get(0));
-//    }
-//
-//
-//    @Test
-//    void getPastOwnersByHouseUuid() {
-//    }
+    @Test
+    void testGetPastTenantsByHouseUuidShouldReturnListPersonWithHistoryDto() {
+
+        Person person = PersonTestBuilder.builder()
+                .build()
+                .buildPerson();
+        LocalDateTime date = TestConstant.PERSON_ONE_CREATE_DATE;
+
+        PersonWithHistoryDto personWithHistoryDto = PersonTestBuilder.builder()
+                .withHistoryDate(date.toString())
+                .build()
+                .buildPersonWithHistoryDto();
+
+        List<Object[]> pastTenants = new ArrayList<>();
+        pastTenants.add(new Object[]{person, date});
+
+        when(personRepository.findPastTenantsByHouseUuid(person.getHouse().getUuid()))
+                .thenReturn(pastTenants);
+        when(personMapper.toPersonWithHistoryDto(person, date))
+                .thenReturn(personWithHistoryDto);
+
+        List<PersonWithHistoryDto> result = houseService.getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(person.getHouse().getUuid());
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        PersonWithHistoryDto dto = result.get(0);
+        assertNotNull(dto);
+
+        Assertions.assertEquals(person.getName(), dto.getName());
+        Assertions.assertEquals(date.toString(), dto.getHistoryDate());
+    }
+
+    @Test
+    void testGetPastOwnersByHouseUuidShouldReturnListPersonWithHistoryDto() {
+
+        Person person = PersonTestBuilder.builder()
+                .build()
+                .buildPerson();
+        LocalDateTime date = TestConstant.PERSON_ONE_CREATE_DATE;
+
+        PersonWithHistoryDto personWithHistoryDto = PersonTestBuilder.builder()
+                .withHistoryDate(date.toString())
+                .build()
+                .buildPersonWithHistoryDto();
+
+
+        List<Object[]> pastOwners = new ArrayList<>();
+        pastOwners.add(new Object[]{person, date});
+
+        when(personRepository.findPastOwnersByHouseUuid(person.getHouse().getUuid()))
+                .thenReturn(pastOwners);
+        when(personMapper.toPersonWithHistoryDto(person, date))
+                .thenReturn(personWithHistoryDto);
+
+        List<PersonWithHistoryDto> result =
+                houseService.getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(person.getHouse().getUuid());
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        PersonWithHistoryDto dto = result.get(0);
+        assertNotNull(dto);
+
+        Assertions.assertEquals(person.getName(), dto.getName());
+        Assertions.assertEquals(date.toString(), dto.getHistoryDate());
+    }
 }

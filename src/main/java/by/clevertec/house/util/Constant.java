@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constant {
 
-
     @UtilityClass
     public class ErrorMessages {
 
@@ -29,6 +28,9 @@ public class Constant {
         public static final String NAME = "name";
         public static final String SURNAME = "surname";
         public static final String ISO_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss";
+        public static final String SEX = "sex";
+        public static final String PASSPORT_DATA = "passportData";
+        public static final String HOUSE_UUID = "houseUuid";
     }
 
 }

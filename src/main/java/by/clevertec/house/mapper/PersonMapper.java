@@ -36,4 +36,5 @@ public interface PersonMapper {
     default String convertToIsoDate(LocalDateTime date) {
         return date.format(DateTimeFormatter.ISO_DATE_TIME);
     }
+
 }

@@ -169,7 +169,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> getTenantsByHouseUuid(UUID uuid) {
+    public List<PersonResponseDto> getPersonsWhoLiveHereNowByHouseUuid(UUID uuid) {
         House house = houseRepository.findByUuid(uuid).orElseThrow(() ->
                 EntityNotFoundException.of(House.class, uuid));
         return house.getTenants().stream()
@@ -178,16 +178,17 @@ public class HouseServiceImpl implements HouseService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+
     @Override
-    public List<PersonWithHistoryDto> getPastTenantsByHouseUuid(UUID uuid) {
+    @Transactional(readOnly = true)
+    public List<PersonWithHistoryDto> getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(UUID uuid) {
         List<Object[]> pastTenants = personRepository.findPastTenantsByHouseUuid(uuid);
         return getCollectObjectListToPersonWithHistoryDtoList(pastTenants);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public List<PersonWithHistoryDto> getPastOwnersByHouseUuid(UUID uuid) {
+    @Transactional(readOnly = true)
+    public List<PersonWithHistoryDto> getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(UUID uuid) {
         List<Object[]> pastOwners = personRepository.findPastOwnersByHouseUuid(uuid);
         return getCollectObjectListToPersonWithHistoryDtoList(pastOwners);
     }
@@ -197,7 +198,8 @@ public class HouseServiceImpl implements HouseService {
                 .map(obj -> {
                     Person person = (Person) obj[0];
                     LocalDateTime date = (LocalDateTime) obj[1];
-                    return personMapper.toPersonWithHistoryDto(person, date);
+                    PersonWithHistoryDto personWithHistoryDto = personMapper.toPersonWithHistoryDto(person, date);
+                    return personWithHistoryDto;
                 })
                 .collect(Collectors.toList());
     }

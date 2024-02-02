@@ -120,7 +120,7 @@ public class HouseController {
      */
     @GetMapping("/{uuid}/tenants")
     public ResponseEntity<List<PersonResponseDto>> getTenants(@PathVariable UUID uuid) {
-        List<PersonResponseDto> tenants = houseService.getTenantsByHouseUuid(uuid);
+        List<PersonResponseDto> tenants = houseService.getPersonsWhoLiveHereNowByHouseUuid(uuid);
         return ResponseEntity.ok(tenants);
     }
 
@@ -129,7 +129,7 @@ public class HouseController {
      */
     @GetMapping("/{uuid}/tenants/history")
     public ResponseEntity<List<PersonWithHistoryDto>> getPastTenants(@PathVariable UUID uuid) {
-        List<PersonWithHistoryDto> pastTenantsByHouseUuid = houseService.getPastTenantsByHouseUuid(uuid);
+        List<PersonWithHistoryDto> pastTenantsByHouseUuid = houseService.getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(uuid);
         return ResponseEntity.ok(pastTenantsByHouseUuid);
     }
 
@@ -138,7 +138,7 @@ public class HouseController {
      */
     @GetMapping("/{uuid}/owners/history")
     public ResponseEntity<List<PersonWithHistoryDto>> getPastOwners(@PathVariable UUID uuid) {
-        List<PersonWithHistoryDto> owners = houseService.getPastOwnersByHouseUuid(uuid);
+        List<PersonWithHistoryDto> owners = houseService.getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(uuid);
         return ResponseEntity.ok(owners);
     }
 

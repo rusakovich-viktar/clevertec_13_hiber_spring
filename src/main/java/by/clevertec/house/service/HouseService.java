@@ -22,9 +22,9 @@ public interface HouseService {
 
     void updateHouseFields(UUID uuid, Map<String, Object> updates);
 
-    List<PersonResponseDto> getTenantsByHouseUuid(UUID uuid);
+    List<PersonResponseDto> getPersonsWhoLiveHereNowByHouseUuid(UUID uuid);
 
-    List<PersonWithHistoryDto> getPastTenantsByHouseUuid(UUID uuid);
+    List<PersonWithHistoryDto> getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(UUID uuid);
 
-    List<PersonWithHistoryDto> getPastOwnersByHouseUuid(UUID uuid);
+    List<PersonWithHistoryDto> getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(UUID uuid);
 }

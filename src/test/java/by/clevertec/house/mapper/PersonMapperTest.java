@@ -2,6 +2,7 @@ package by.clevertec.house.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
@@ -52,6 +53,15 @@ public class PersonMapperTest {
     }
 
     @Test
+    void testToDtoShouldReturnNull_whenEntityIsNull() {
+        // when
+        PersonResponseDto actual = personMapper.toDto(null);
+
+        // then
+        assertNull(actual);
+    }
+
+    @Test
     void testToEntityShouldReturnPerson() {
         // given
         PersonRequestDto dto = PersonTestBuilder.builder()
@@ -78,6 +88,15 @@ public class PersonMapperTest {
     }
 
     @Test
+    void testToEntityShouldReturnNull_whenDtoIsNull() {
+        // when
+        Person actual = personMapper.toEntity(null);
+
+        // then
+        assertNull(actual);
+    }
+
+    @Test
     void testToPersonWithHistoryDtoShouldReturnPersonWithHistoryDto() {
         // given
         Person person = PersonTestBuilder.builder()
@@ -98,6 +117,15 @@ public class PersonMapperTest {
                 .hasFieldOrPropertyWithValue(PersonWithHistoryDto.Fields.name, expected.getName())
                 .hasFieldOrPropertyWithValue(PersonWithHistoryDto.Fields.surname, expected.getSurname())
                 .hasFieldOrPropertyWithValue(PersonWithHistoryDto.Fields.historyDate, expected.getHistoryDate());
+    }
+
+    @Test
+    void testToPersonWithHistoryDtoShouldReturnNull_whenPersonAndDateAreNull() {
+        // when
+        PersonWithHistoryDto actual = personMapper.toPersonWithHistoryDto(null, null);
+
+        // then
+        assertNull(actual);
     }
 
     @Test
@@ -128,6 +156,15 @@ public class PersonMapperTest {
                 .isEqualTo(expected.getPassportData().getPassportSeries());
         assertThat(actual.getPassportData().getPassportNumber())
                 .isEqualTo(expected.getPassportData().getPassportNumber());
+    }
+
+    @Test
+    void testToPassportDataShouldReturnNull_whenDtoIsNull() {
+        // when
+        PassportData actual = personMapper.toPassportData(null);
+
+        // then
+        assertNull(actual);
     }
 
     @Test

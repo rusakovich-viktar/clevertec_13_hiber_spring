@@ -193,20 +193,18 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(readOnly = true)
     @Override
     public List<HouseWithHistoryDto> getTenantedHousesHistoryByPersonUuid(UUID personUuid) {
-        List<Object[]> pastTenants = houseRepository.getPastTenantsByUuid(personUuid);
-        return pastTenants.stream()
-                .map(obj -> {
-                    House house = (House) obj[0];
-                    LocalDateTime date = (LocalDateTime) obj[1];
-                    return houseMapper.toHouseWithHistoryDto(house, date);
-                })
-                .collect(Collectors.toList());
+        List<Object[]> pastTenants = houseRepository.getPastTenantedHousesByPersonUuid(personUuid);
+        return getCollect(pastTenants);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<HouseWithHistoryDto> getOwnedHousesHistoryByPersonUuid(UUID personUuid) {
-        List<Object[]> pastOwnedHouses = houseRepository.findPastOwnedHousesByUuid(personUuid);
+        List<Object[]> pastOwnedHouses = houseRepository.getPastOwnedHousesByPersonUuid(personUuid);
+        return getCollect(pastOwnedHouses);
+    }
+
+    private List<HouseWithHistoryDto> getCollect(List<Object[]> pastOwnedHouses) {
         return pastOwnedHouses.stream()
                 .map(obj -> {
                     House house = (House) obj[0];
@@ -290,9 +288,6 @@ public class PersonServiceImpl implements PersonService {
      */
     private House returnHouseTenantIfExist(PersonRequestDto personDto) {
         UUID houseUuid = personDto.getHouseUuid();
-        if (houseUuid == null) {
-            throw new IllegalArgumentException("UUID обязателен");
-        }
         return houseRepository
                 .findByUuid(houseUuid)
                 .orElseThrow(() -> EntityNotFoundException.of(House.class, houseUuid));

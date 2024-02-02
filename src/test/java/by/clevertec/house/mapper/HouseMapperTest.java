@@ -3,6 +3,7 @@ package by.clevertec.house.mapper;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_CREATE_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
@@ -43,6 +44,15 @@ class HouseMapperTest {
     }
 
     @Test
+    void testToDtoShouldReturnNullWhenEntityIsNull() {
+        // when
+        HouseResponseDto actual = houseMapper.toDto(null);
+
+        // then
+        assertNull(actual);
+    }
+
+    @Test
     void testToEntityShouldReturnHouse() {
         // given
         HouseRequestDto dto = HouseTestBuilder.builder()
@@ -62,6 +72,15 @@ class HouseMapperTest {
                 .hasFieldOrPropertyWithValue(HouseWithHistoryDto.Fields.city, expected.getCity())
                 .hasFieldOrPropertyWithValue(HouseWithHistoryDto.Fields.street, expected.getStreet())
                 .hasFieldOrPropertyWithValue(HouseWithHistoryDto.Fields.number, expected.getNumber());
+    }
+
+    @Test
+    void testToEntityShouldReturnNullWhenDtoIsNull() {
+        // when
+        House actual = houseMapper.toEntity(null);
+
+        // then
+        assertNull(actual);
     }
 
     @Test
@@ -92,6 +111,15 @@ class HouseMapperTest {
     }
 
     @Test
+    void testToHouseWithHistoryDtoShouldReturnNullWhenHouseAndDateAreNull() {
+        // when
+        HouseWithHistoryDto actual = houseMapper.toHouseWithHistoryDto(null, null);
+
+        // then
+        assertNull(actual);
+    }
+
+    @Test
     void testUpdateHouseDetailsFromDtoShouldUpdateHouseDetails() {
         // given
         House actual = HouseTestBuilder.builder()
@@ -107,6 +135,7 @@ class HouseMapperTest {
 
         // then
         assertThat(actual)
+                .hasFieldOrPropertyWithValue(Fields.uuid, expected.getUuid())
                 .hasFieldOrPropertyWithValue(Fields.area, expected.getArea())
                 .hasFieldOrPropertyWithValue(Fields.country, expected.getCountry())
                 .hasFieldOrPropertyWithValue(Fields.city, expected.getCity())
@@ -125,5 +154,4 @@ class HouseMapperTest {
         // then
         assertEquals("2023-06-30T23:59:59", isoDate);
     }
-
 }

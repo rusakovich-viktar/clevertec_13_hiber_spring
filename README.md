@@ -20,8 +20,9 @@ HousesProject.postman_collection.json
  
 
 ```
-
+![img_1.png](img_1.png)
 ![img.png](img.png)
+
 
 Task
 Берём за основу существующее приложение и переезжаем на Spring boot 3.2.* в ветке feature/boot

@@ -261,7 +261,7 @@ class HouseControllerTest {
                     .buildPersonResponseDto();
 
             List<PersonResponseDto> expectedTenants = List.of(tenantOne, tenantTwo);
-            when(houseService.getTenantsByHouseUuid(uuid))
+            when(houseService.getPersonsWhoLiveHereNowByHouseUuid(uuid))
                     .thenReturn(expectedTenants);
 
             // when & then
@@ -285,7 +285,7 @@ class HouseControllerTest {
         @Test
         void getTenantsShouldReturnEmptyList_whenNoPersons() throws Exception {
             // given
-            when(houseService.getTenantsByHouseUuid(randomUUID))
+            when(houseService.getPersonsWhoLiveHereNowByHouseUuid(randomUUID))
                     .thenReturn(List.of());
 
             // when & then
@@ -311,7 +311,7 @@ class HouseControllerTest {
                     .buildPersonWithHistoryDto();
 
             List<PersonWithHistoryDto> expectedPersons = List.of(personOne, personTwo);
-            when(houseService.getPastTenantsByHouseUuid(randomUUID))
+            when(houseService.getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(randomUUID))
                     .thenReturn(expectedPersons);
 
             // when & then
@@ -331,7 +331,7 @@ class HouseControllerTest {
         @Test
         void getTenantsHistoryShouldReturnEmptyList_whenNoPersons() throws Exception {
             // given
-            when(houseService.getPastTenantsByHouseUuid(randomUUID))
+            when(houseService.getPersonsWithHistoryWhoLivedHereInPastByHouseUuid(randomUUID))
                     .thenReturn(List.of());
 
             // when & then
@@ -357,7 +357,7 @@ class HouseControllerTest {
                     .buildPersonWithHistoryDto();
 
             List<PersonWithHistoryDto> expectedPersons = List.of(personOne, personTwo);
-            when(houseService.getPastOwnersByHouseUuid(randomUUID))
+            when(houseService.getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(randomUUID))
                     .thenReturn(expectedPersons);
 
             // when & then
@@ -377,7 +377,7 @@ class HouseControllerTest {
         @Test
         void getOwnersHistoryShouldReturnEmptyList_whenNoPersons() throws Exception {
             // given
-            when(houseService.getPastOwnersByHouseUuid(randomUUID))
+            when(houseService.getPersonsWithHistoryWhoOwnedThisHouseByHouseUuid(randomUUID))
                     .thenReturn(List.of());
 
             // when & then

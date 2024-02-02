@@ -64,7 +64,7 @@ class HouseRepositoryTest {
     }
 
     @Test
-    void getOwnedHousesByPersonUuidShouldReturnList_whenItExist() {
+    void getOwnedHousesByPersonUuidShouldReturnListHouses_whenItExist() {
         // given
         House house = HouseTestBuilder.builder()
                 .build()
