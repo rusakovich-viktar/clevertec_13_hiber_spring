@@ -129,8 +129,8 @@ public class PersonController {
      * Получает список домов, ранее принадлежащих персоне по его UUID.
      */
     @GetMapping("/{uuid}/tenanted-houses/history")
-    public ResponseEntity<List<HouseWithHistoryDto>> getPastResidences(@PathVariable UUID uuid) {
-        List<HouseWithHistoryDto> pastTenants = personService.getPastTenantsByUuid(uuid);
+    public ResponseEntity<List<HouseWithHistoryDto>> getPastTenants(@PathVariable UUID uuid) {
+        List<HouseWithHistoryDto> pastTenants = personService.getTenantedHousesHistoryByPersonUuid(uuid);
         return ResponseEntity.ok(pastTenants);
     }
 
@@ -139,7 +139,7 @@ public class PersonController {
      */
     @GetMapping("/{uuid}/owned-houses/history")
     public ResponseEntity<List<HouseWithHistoryDto>> getPastOwnedHouses(@PathVariable UUID uuid) {
-        List<HouseWithHistoryDto> ownedHouses = personService.getPastOwnedHousesByUuid(uuid);
+        List<HouseWithHistoryDto> ownedHouses = personService.getOwnedHousesHistoryByPersonUuid(uuid);
         return ResponseEntity.ok(ownedHouses);
     }
 }

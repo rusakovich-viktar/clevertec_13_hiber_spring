@@ -24,9 +24,9 @@ public interface PersonService {
 
     List<HouseResponseDto> getOwnedHousesByPersonUuid(UUID uuid);
 
-    List<HouseWithHistoryDto> getPastTenantsByUuid(UUID personUuid);
+    List<HouseWithHistoryDto> getTenantedHousesHistoryByPersonUuid(UUID personUuid);
 
-    List<HouseWithHistoryDto> getPastOwnedHousesByUuid(UUID uuid);
+    List<HouseWithHistoryDto> getOwnedHousesHistoryByPersonUuid(UUID uuid);
 
 }
 

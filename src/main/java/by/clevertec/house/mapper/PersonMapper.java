@@ -1,5 +1,7 @@
 package by.clevertec.house.mapper;
 
+import static by.clevertec.house.util.Constant.Attributes.ISO_DATE_TIME;
+
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonRequestDto.PassportDataDto;
 import by.clevertec.house.dto.PersonResponseDto;
@@ -11,41 +13,27 @@ import java.time.format.DateTimeFormatter;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface PersonMapper {
 
-    @Mapping(target = "createDate", expression = "java(convertToIsoDate(entity.getCreateDate()))")
-    @Mapping(target = "updateDate", expression = "java(convertToIsoDate(entity.getUpdateDate()))")
+    @Mapping(target = "createDate", dateFormat = ISO_DATE_TIME)
+    @Mapping(target = "updateDate", dateFormat = ISO_DATE_TIME)
     PersonResponseDto toDto(Person entity);
 
+    @Mapping(target = "passportData", source = "passportData")
     Person toEntity(PersonRequestDto dto);
+
+    @Mapping(target = "historyDate", expression = "java(convertToIsoDate(date))")
+    PersonWithHistoryDto toPersonWithHistoryDto(Person person, LocalDateTime date);
+
+    PassportData toPassportData(PassportDataDto dto);
+
+    void updatePersonDetailsFromDto(@MappingTarget Person person, PersonRequestDto dto);
 
     default String convertToIsoDate(LocalDateTime date) {
         return date.format(DateTimeFormatter.ISO_DATE_TIME);
-    }
-
-    default PersonWithHistoryDto toPersonWithHistoryDto(Person person, LocalDateTime date) {
-        PersonWithHistoryDto dto = new PersonWithHistoryDto();
-        dto.setName(person.getName());
-        dto.setSurname(person.getSurname());
-        dto.setUuid(person.getUuid());
-        dto.setHistoryDate(date.format(DateTimeFormatter.ISO_DATE_TIME));
-        return dto;
-    }
-
-    default PassportData toPassportData(PassportDataDto dto) {
-        PassportData data = new PassportData();
-        data.setPassportSeries(dto.getPassportSeries());
-        data.setPassportNumber(dto.getPassportNumber());
-        return data;
-    }
-
-    default void updatePersonDetailsFromDto(Person person, PersonRequestDto dto) {
-        person.setName(dto.getName());
-        person.setSurname(dto.getSurname());
-        person.setSex(dto.getSex());
-        person.setPassportData(toPassportData(dto.getPassportData()));
     }
 }

@@ -1,5 +1,6 @@
 package by.clevertec.house.util;
 
+import static by.clevertec.house.util.TestConstant.HISTORY_TIME;
 import static by.clevertec.house.util.TestConstant.HOUSE_ONE_UUID;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_CREATE_DATE;
 import static by.clevertec.house.util.TestConstant.PERSON_ONE_NAME;
@@ -59,6 +60,9 @@ public class PersonTestBuilder {
     @Builder.Default
     private LocalDateTime updateDate = PERSON_ONE_UPDATE_DATE;
 
+    @Builder.Default
+    private String historyDate = HISTORY_TIME;
+
     public PersonTestBuilder house(House house) {
         this.house = house;
         return this;
@@ -93,10 +97,10 @@ public class PersonTestBuilder {
 
     public PersonWithHistoryDto buildPersonWithHistoryDto() {
         PersonWithHistoryDto personWithHistoryDto = new PersonWithHistoryDto();
-        personWithHistoryDto.setHistoryDate(personWithHistoryDto.getHistoryDate());
-        personWithHistoryDto.setName(personWithHistoryDto.getName());
-        personWithHistoryDto.setSurname(personWithHistoryDto.getSurname());
-        personWithHistoryDto.setUuid(personWithHistoryDto.getUuid());
+        personWithHistoryDto.setHistoryDate(historyDate);
+        personWithHistoryDto.setName(name);
+        personWithHistoryDto.setSurname(surname);
+        personWithHistoryDto.setUuid(uuid);
         return personWithHistoryDto;
     }
 

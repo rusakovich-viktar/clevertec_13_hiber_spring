@@ -30,5 +30,7 @@ public class TestConstant {
     public static final int PAGE_SIZE = 15;
     public static final String ALEX = "Alex";
     public static final String ALEXEEY = "Alexeev";
+    public static final String HISTORY_TIME = "2024-02-01T23:10:28.356663";
+
 
 }

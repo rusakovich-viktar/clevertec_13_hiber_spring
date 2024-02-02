@@ -1,5 +1,6 @@
 package by.clevertec.house.util;
 
+import static by.clevertec.house.util.TestConstant.HISTORY_TIME;
 import static by.clevertec.house.util.TestConstant.HOUSE_ONE_AREA;
 import static by.clevertec.house.util.TestConstant.HOUSE_ONE_CITY;
 import static by.clevertec.house.util.TestConstant.HOUSE_ONE_COUNTRY;
@@ -9,6 +10,7 @@ import static by.clevertec.house.util.TestConstant.HOUSE_ONE_UUID;
 
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
+import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.Person;
 import java.time.LocalDateTime;
@@ -43,7 +45,7 @@ public class HouseTestBuilder {
     private String number = HOUSE_ONE_NUMBER;
 
     @Builder.Default
-    private LocalDateTime createDate = LocalDateTime.of(2024, 1, 30, 10, 0, 0);
+    private LocalDateTime createDate = LocalDateTime.of(2024, 1, 30, 10, 22, 22);
 
     @Builder.Default
     private List<Person> tenants = new ArrayList<>();
@@ -56,6 +58,9 @@ public class HouseTestBuilder {
 
     @Builder.Default
     private List<UUID> ownersUuids = new ArrayList<>();
+
+    @Builder.Default
+    private String historyDate = HISTORY_TIME;
 
     public House buildHouse() {
         House house = new House();
@@ -94,5 +99,17 @@ public class HouseTestBuilder {
         houseRequestDto.setTenantUuids(tenantsUuids);
         houseRequestDto.setOwnerUuids(ownersUuids);
         return houseRequestDto;
+    }
+
+    public HouseWithHistoryDto buildHouseWithHistoryDto() {
+        HouseWithHistoryDto houseWithHistoryDto = new HouseWithHistoryDto();
+        houseWithHistoryDto.setUuid(uuid);
+        houseWithHistoryDto.setArea(area);
+        houseWithHistoryDto.setCountry(country);
+        houseWithHistoryDto.setCity(city);
+        houseWithHistoryDto.setStreet(street);
+        houseWithHistoryDto.setNumber(number);
+        houseWithHistoryDto.setHistoryDate(historyDate);
+        return houseWithHistoryDto;
     }
 }

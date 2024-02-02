@@ -63,7 +63,6 @@ class HouseRepositoryTest {
         assertFalse(actual.isPresent());
     }
 
-
     @Test
     void getOwnedHousesByPersonUuidShouldReturnList_whenItExist() {
         // given

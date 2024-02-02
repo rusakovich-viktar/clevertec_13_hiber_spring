@@ -192,7 +192,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<HouseWithHistoryDto> getPastTenantsByUuid(UUID personUuid) {
+    public List<HouseWithHistoryDto> getTenantedHousesHistoryByPersonUuid(UUID personUuid) {
         List<Object[]> pastTenants = houseRepository.getPastTenantsByUuid(personUuid);
         return pastTenants.stream()
                 .map(obj -> {
@@ -205,7 +205,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<HouseWithHistoryDto> getPastOwnedHousesByUuid(UUID personUuid) {
+    public List<HouseWithHistoryDto> getOwnedHousesHistoryByPersonUuid(UUID personUuid) {
         List<Object[]> pastOwnedHouses = houseRepository.findPastOwnedHousesByUuid(personUuid);
         return pastOwnedHouses.stream()
                 .map(obj -> {

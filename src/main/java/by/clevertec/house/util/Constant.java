@@ -28,6 +28,7 @@ public class Constant {
         public static final int VALUE_ONE_TO_SIMPLIFY_UI = 1;
         public static final String NAME = "name";
         public static final String SURNAME = "surname";
+        public static final String ISO_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss";
     }
 
 }
