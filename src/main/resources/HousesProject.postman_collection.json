@@ -70,7 +70,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440000"
           },
           "response": []
         },
@@ -88,7 +88,7 @@
                 }
               }
             },
-            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440000"
           },
           "response": []
         },
@@ -115,7 +115,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440011"
+            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440000"
           },
           "response": []
         }
@@ -131,7 +131,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440004\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440011\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440011\", \"550e8400-e29b-41d4-a716-446655440011\"\r\n    ]\r\n}",
+              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440004\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440000\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440000\", \"550e8400-e29b-41d4-a716-446655440000\"\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -203,7 +203,7 @@
                 }
               }
             },
-            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002"
           },
           "response": []
         },
@@ -230,7 +230,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440004"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002"
           },
           "response": []
         }
@@ -252,7 +252,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "url": "http://localhost:8080/houses"
           },
           "response": []
         },
@@ -299,14 +300,14 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "",
+              "raw": "{\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440000\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440000\", \"550e8400-e29b-41d4-a716-446655440000\"\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:8080/houses/1"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002"
           },
           "response": []
         },
@@ -317,14 +318,14 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"uuid\": \"550e8400-e29b-41d4-a716-446655440002\",\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440001\", \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ]\r\n}",
+              "raw": "{\r\n    \"name\": \"Ivan\",\r\n    \"surname\": \"Ivanov\",\r\n    \"sex\": \"MALE\",\r\n    \"passportData\": {\r\n        \"passportSeries\": \"MP\",\r\n        \"passportNumber\": \"1234564\"\r\n    }\r\n    ,\r\n    \"houseUuid\": \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ,\r\n    \"ownedHouseUuids\": [\r\n        \"550e8400-e29b-41d4-a716-446655440001\", \"550e8400-e29b-41d4-a716-446655440001\"\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:8080/houses/1"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002"
           },
           "response": []
         }
@@ -356,7 +357,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440002/tenants/history"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002/tenanted-houses/history"
           },
           "response": []
         },
@@ -365,7 +366,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440002/tenants/history"
+            "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002/owned-houses/history"
           },
           "response": []
         }
@@ -385,7 +386,7 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "http://localhost:8080/houses/550e8400-e29b-41d4-a716-446655440006/residents"
+        "url": "http://localhost:8080/persons/550e8400-e29b-41d4-a716-446655440002/owned-houses"
       },
       "response": []
     }

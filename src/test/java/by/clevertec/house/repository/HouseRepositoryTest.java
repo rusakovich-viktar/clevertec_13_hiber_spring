@@ -26,7 +26,7 @@ class HouseRepositoryTest {
     private final HouseRepository houseRepository;
 
     @Test
-    void findByUuidShouldReturnHouse_whenItExist() {
+    void testFindByUuidShouldReturnHouse_whenItExist() {
         // given
         House expected = HouseTestBuilder.builder()
                 .build()
@@ -49,7 +49,7 @@ class HouseRepositoryTest {
 
     @Test
     @Sql(value = "classpath:db/dml/insert-only-one-house.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    void deleteByUuidShouldRemoveHouse_whenUuidExists() {
+    void testDeleteByUuidShouldRemoveHouse_whenUuidExists() {
         // given
         House house = HouseTestBuilder.builder()
                 .build()
@@ -64,7 +64,7 @@ class HouseRepositoryTest {
     }
 
     @Test
-    void getOwnedHousesByPersonUuidShouldReturnListHouses_whenItExist() {
+    void testGetOwnedHousesByPersonUuidShouldReturnListHouses_whenItExist() {
         // given
         House house = HouseTestBuilder.builder()
                 .build()
@@ -83,11 +83,4 @@ class HouseRepositoryTest {
 
     }
 
-    @Test
-    void getPastTenantsByUuid() {
-    }
-
-    @Test
-    void findPastOwnedHousesByUuid() {
-    }
 }

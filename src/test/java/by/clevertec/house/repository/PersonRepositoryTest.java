@@ -23,7 +23,7 @@ class PersonRepositoryTest {
     private final PersonRepository personRepository;
 
     @Test
-    void findByUuidShouldReturnPerson_whenItExist() {
+    void testFindByUuidShouldReturnPerson_whenItExist() {
         // given
         Person expected = PersonTestBuilder.builder()
                 .build()
@@ -46,7 +46,7 @@ class PersonRepositoryTest {
 
     @Test
     @Sql(value = "classpath:db/dml/insert-only-person-not-owner.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    void deleteByUuidShouldRemovePerson_whenUuidExists() {
+    void testDeleteByUuidShouldRemovePerson_whenUuidExists() {
         // given
         Person expected = PersonTestBuilder.builder()
                 .build()

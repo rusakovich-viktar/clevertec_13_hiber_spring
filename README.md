@@ -1,9 +1,16 @@
 # :satellite: О проекте
-
 Web приложение учёта домов и жильцов
+```bash
+
+
 Подключен SpringBoot
 Подключен DataJPA
 Реализован базовый функционал
+Добавлен кэш и интеграционный тест в многопоточке
+Добавлены тесты, суммарное покрытие 90%
+Тестирование проходит используя средства Spring для тестирования: testcontainers, mockMvc
+
+```
 
 ## :gear: Как запустить проект:
 
@@ -20,10 +27,10 @@ HousesProject.postman_collection.json
  
 
 ```
-![img_1.png](img_1.png)
+
+![img_2.png](img_2.png)
 ![img.png](img.png)
-
-
+![img_1.png](img_1.png)
 Task
 Берём за основу существующее приложение и переезжаем на Spring boot 3.2.* в ветке feature/boot
 

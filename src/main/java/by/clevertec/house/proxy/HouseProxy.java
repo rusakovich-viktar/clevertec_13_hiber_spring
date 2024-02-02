@@ -10,6 +10,8 @@ import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.repository.HouseRepository;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.StampedLock;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -42,7 +44,8 @@ public class HouseProxy {
     @Value("${cache.capacity}")
     private Integer maxCapacity;
 
-    private Cache<UUID, Object> userCache = configureCache();
+    private final AtomicReference<Cache<UUID, Object>> userCache = new AtomicReference<>(createCache());
+    private final StampedLock lock = new StampedLock();
     private final HouseMapper houseMapper;
     private final HouseRepository houseRepository;
 
@@ -63,13 +66,29 @@ public class HouseProxy {
     public Object getHouse(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         UUID uuid = (UUID) args[0];
-        HouseResponseDto houseResponseDto = (HouseResponseDto) userCache.get(uuid);
+
+        long stamp = lock.tryOptimisticRead();
+        Object cachedObject = userCache.get().get(uuid);
+        HouseResponseDto houseResponseDto = null;
+        if (cachedObject instanceof HouseResponseDto) {
+            houseResponseDto = (HouseResponseDto) cachedObject;
+        }
+        if (!lock.validate(stamp)) {
+            stamp = lock.readLock();
+            try {
+                houseResponseDto = (HouseResponseDto) userCache.get().get(uuid);
+            } finally {
+                lock.unlockRead(stamp);
+            }
+        }
+
         if (houseResponseDto != null) {
             return houseResponseDto;
         }
+
         Object result = joinPoint.proceed();
         if (result instanceof HouseResponseDto houseDto) {
-            userCache.put(uuid, result);
+            userCache.get().put(uuid, result);
             return houseDto;
         }
         return result;
@@ -78,40 +97,29 @@ public class HouseProxy {
     @AfterReturning(pointcut = "createCacheable() && args(houseDto)")
     public void createHouse(HouseRequestDto houseDto) {
         House house = houseMapper.toEntity(houseDto);
-        userCache.put(house.getUuid(), house);
+        userCache.get().put(house.getUuid(), house);
     }
 
     @AfterReturning(pointcut = "deleteCacheable() && args(uuid)")
     public void deleteHouse(UUID uuid) {
-        userCache.remove(uuid);
+        userCache.get().remove(uuid);
     }
 
     @AfterReturning(pointcut = "updateCacheable() && args(uuid, houseDto)", argNames = "uuid,houseDto")
     public void updateHouse(UUID uuid, HouseRequestDto houseDto) {
         House house = houseRepository.findByUuid(uuid).orElseThrow(() -> EntityNotFoundException.of(House.class, uuid));
         houseMapper.updateHouseFromDto(houseDto, house);
-        userCache.put(house.getUuid(), house);
+        userCache.get().put(house.getUuid(), house);
     }
 
-    /**
-     * Метод {@code configureCache} используется для настройки кэша.
-     * Он читает конфигурацию из файла YAML и создает кэш с выбранным типом и вместимостью.
-     *
-     * @return Объект {@code Cache<Integer, User>}, представляющий настроенный кэш.
-     */
-    private Cache<UUID, Object> configureCache() {
-        if (userCache == null) {
-            synchronized (this) {
-                if (maxCapacity == null) {
-                    maxCapacity = 50;
-                }
-                if ("LFU".equals(algorithm)) {
-                    userCache = new LfuCache<>(maxCapacity);
-                } else {
-                    userCache = new LruCache<>(maxCapacity);
-                }
-            }
+    private Cache<UUID, Object> createCache() {
+        if (maxCapacity == null) {
+            maxCapacity = 50;
         }
-        return userCache;
+        if ("LFU".equals(algorithm)) {
+            return new LfuCache<>(maxCapacity);
+        } else {
+            return new LruCache<>(maxCapacity);
+        }
     }
 }
