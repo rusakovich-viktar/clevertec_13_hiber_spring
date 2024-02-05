@@ -8,17 +8,18 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import by.clevertec.house.util.Constant.ErrorMessages;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Глобальный обработчик исключений.
  * Обрабатывает исключения, возникающие во время выполнения приложения, и возвращает соответствующие сообщения об ошибках.
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
@@ -72,6 +73,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(NullPointerException exception) {
         return getErrorResponseEntity(exception, INVALID_ARGUMENTS, BAD_REQUEST);
 
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleException(DataIntegrityViolationException exception) {
+        return getErrorResponseEntity(exception, INVALID_ARGUMENTS, BAD_REQUEST);
     }
 
     /**

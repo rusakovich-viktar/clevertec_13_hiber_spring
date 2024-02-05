@@ -1,66 +1,68 @@
 plugins {
     id 'java'
     id 'war'
+    id 'org.springframework.boot' version '3.3.0-M1'
+    id 'io.spring.dependency-management' version '1.1.4'
     id "io.freefair.lombok" version "6.5.1"
 }
 
-group 'by.clevertec'
-version '1.0-SNAPSHOT'
+group = 'by.clevertec'
+version = '1.0-SNAPSHOT'
+
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-    springVersion = '6.1.2'
-    hibernateVersion = '6.1.7.Final'
-    flywayVersion = '9.22.0'
-    jakartaVersion = '3.1.0'
-    jakartaVersionApi = '3.0.0-M1'
-    hibernateValidatorVersion = '8.0.1.Final'
-    snakeyamlVersion = '2.1'
-    postgresqlVersion = '42.5.4'
     mapstructVersion = '1.5.3.Final'
-    junitVersion = '5.9.2'
-    mockitoVersion = '5.2.0'
-    servletApiVersion = '6.0.0'
-    flywayDatabasePostgresqlVersion = '10.5.0'
 }
 
 dependencies {
-    implementation "org.springframework:spring-webmvc:${springVersion}"
-    implementation "org.springframework:spring-orm:${springVersion}"
-
-    implementation "org.hibernate:hibernate-core:${hibernateVersion}"
-    implementation 'org.hibernate:hibernate-entitymanager:5.6.15.Final'
-    implementation "org.flywaydb:flyway-core:${flywayVersion}"
-
-    implementation "jakarta.persistence:jakarta.persistence-api:${jakartaVersion}"
-    implementation "jakarta.annotation:jakarta.annotation-api:${jakartaVersionApi}"
-    implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
-
-    implementation "org.yaml:snakeyaml:${snakeyamlVersion}"
-    implementation "org.postgresql:postgresql:${postgresqlVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.flywaydb:flyway-core'
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    compileOnly "jakarta.servlet:jakarta.servlet-api:${servletApiVersion}"
+    compileOnly 'org.projectlombok:lombok'
+//    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    runtimeOnly "org.flywaydb:flyway-database-postgresql:${flywayDatabasePostgresqlVersion}"
-
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
-}
-
-compileJava {
-    options.compilerArgs << '-parameters'
-
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:junit-jupiter'
+//    testImplementation 'org.springframework.security:spring-security-test'
 
 }
+
 compileJava {
     options.compilerArgs += [
             '-Amapstruct.suppressGeneratorTimestamp=true',
             '-Amapstruct.suppressGeneratorVersionInfoComment=true',
             '-Amapstruct.verbose=true'
     ]
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
 }
 
 jar {
@@ -76,6 +78,6 @@ war {
     }
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }

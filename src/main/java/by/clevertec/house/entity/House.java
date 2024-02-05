@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 /**
  * HouseEntity.
@@ -32,6 +33,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "houses")
+@FieldNameConstants
 public class House {
 
     @Id
@@ -60,7 +62,7 @@ public class House {
     private LocalDateTime createDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "house")
-    private List<Person> residents;
+    private List<Person> tenants;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
