@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PersonRequestDto {
 
     private UUID uuid = UUID.randomUUID();
@@ -41,6 +43,7 @@ public class PersonRequestDto {
      * Вложенный класс DTO для данных паспорта персоны.
      */
     @Data
+    @AllArgsConstructor
     public static class PassportDataDto {
 
         @Size(min = 2, max = 2, message = "Длина серии паспорта должна быть ровно 2 символа")
