@@ -14,6 +14,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import by.clevertec.exception.EntityNotFoundException;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.dto.PersonRequestDto;
@@ -22,7 +23,6 @@ import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.PassportData;
 import by.clevertec.house.entity.Person;
 import by.clevertec.house.entity.Sex;
-import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.repository.HouseRepository;
@@ -188,7 +188,6 @@ class PersonServiceImplTest {
         // then
         verify(personRepository, times(2))
                 .save(personCaptor.capture());
-
 
         Person savedPerson = personCaptor.getValue();
         assertNotNull(savedPerson.getUuid());

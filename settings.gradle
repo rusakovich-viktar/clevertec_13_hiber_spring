@@ -5,4 +5,5 @@ pluginManagement {
     }
 }
 rootProject.name = 'hiber-task'
+include 'exception-handler-spring-boot-starter'
 

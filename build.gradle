@@ -39,6 +39,9 @@ dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     compileOnly 'org.projectlombok:lombok'
 //    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    implementation 'by.clevertec:exception-handler-spring-boot-starter'
+
+    implementation project(path: ':exception-handler-spring-boot-starter')
 
 
     runtimeOnly 'org.postgresql:postgresql'
@@ -49,6 +52,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:junit-jupiter'
+
+    testImplementation project(path: ':exception-handler-spring-boot-starter')
+
 //    testImplementation 'org.springframework.security:spring-security-test'
 
 }

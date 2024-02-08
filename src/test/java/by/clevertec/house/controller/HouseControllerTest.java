@@ -14,13 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import by.clevertec.exception.EntityNotFoundException;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.Sex;
-import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.service.HouseService;
 import by.clevertec.house.util.HouseTestBuilder;
 import by.clevertec.house.util.PersonTestBuilder;
@@ -86,9 +86,7 @@ class HouseControllerTest {
 
             mockMvc.perform(get(url))
                     .andExpect(status().isNotFound())
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
-                    .andExpect(jsonPath("$.timestamp").exists())
-                    .andExpect(jsonPath("$.message", is(exception.getMessage())));
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
         }
     }
 

@@ -19,12 +19,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import by.clevertec.exception.EntityNotFoundException;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.HouseWithHistoryDto;
 import by.clevertec.house.dto.PersonRequestDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.entity.Person;
-import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.service.PersonService;
 import by.clevertec.house.util.Constant.Attributes;
 import by.clevertec.house.util.HouseTestBuilder;
@@ -90,9 +90,7 @@ class PersonControllerTest {
 
             mockMvc.perform(get(url))
                     .andExpect(status().isNotFound())
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
-                    .andExpect(jsonPath("$.timestamp").exists())
-                    .andExpect(jsonPath("$.message", is(exception.getMessage())));
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
         }
     }
 

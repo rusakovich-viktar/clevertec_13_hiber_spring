@@ -7,13 +7,13 @@ import static by.clevertec.house.util.Constant.Attributes.NUMBER;
 import static by.clevertec.house.util.Constant.Attributes.STREET;
 import static by.clevertec.house.util.Constant.Attributes.VALUE_ONE_TO_SIMPLIFY_UI;
 
+import by.clevertec.exception.EntityNotFoundException;
 import by.clevertec.house.dto.HouseRequestDto;
 import by.clevertec.house.dto.HouseResponseDto;
 import by.clevertec.house.dto.PersonResponseDto;
 import by.clevertec.house.dto.PersonWithHistoryDto;
 import by.clevertec.house.entity.House;
 import by.clevertec.house.entity.Person;
-import by.clevertec.house.exception.EntityNotFoundException;
 import by.clevertec.house.mapper.HouseMapper;
 import by.clevertec.house.mapper.PersonMapper;
 import by.clevertec.house.proxy.annotation.Cacheable;
